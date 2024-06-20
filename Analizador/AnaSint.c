@@ -161,7 +161,7 @@ void BLOCK_DEF()
         if (tk.codigo == ABRE_COL)
         {
             Consome(ABRE_COL);
-            if (tk.cat == CONST_INT || tk.cat == ID_CONST)
+            if (tk.cat == CONST_INT || tk.cat == CONST_INT)
             {
                 Consome(tk.cat);
             }
@@ -176,7 +176,7 @@ void BLOCK_DEF()
             if (tk.codigo == ABRE_COL)
             {
                 Consome(ABRE_COL);
-                if (tk.cat == CONST_INT || tk.cat == ID_CONST)
+                if (tk.cat == CONST_INT || tk.cat == CONST_INT)
                 {
                     Consome(tk.cat);
                 }
@@ -225,7 +225,7 @@ void DECL_VAR()
         printf("[DECL_VAR][ABRE_COL][Entrada]\n\n");
 
         Consome(ABRE_COL);
-        if (tk.cat == CONST_INT || tk.cat == ID_CONST)
+        if (tk.cat == CONST_INT || tk.cat == CONST_INT)
         {
             printf("[DECL_VAR][CONST_INT][Entrada]\n\n");
             Consome(tk.cat);
@@ -237,7 +237,7 @@ void DECL_VAR()
     {
         printf("[DECL_VAR][ATRIB][Entrada]\n\n");
         Consome(ATRIB);
-        if (tk.cat == CONST_INT || tk.cat == CONST_FLOAT || tk.cat == CONST_CHAR || tk.cat == LITERAL)
+        if (tk.cat == CONST_INT || tk.cat == CT_F || tk.cat == CT_C || tk.cat == LT)
         {
             printf("[DECL_VAR][ATRIB][CAT][Entrada]\n\n");
             Consome(tk.cat);
@@ -248,7 +248,7 @@ void DECL_VAR()
             Consome(ABRE_CHAVE);
             do
             {
-                if (tk.cat == CONST_INT || tk.cat == CONST_FLOAT || tk.cat == CONST_CHAR || tk.cat == LITERAL)
+                if (tk.cat == CONST_INT || tk.cat == CT_F || tk.cat == CT_C || tk.cat == LT)
                 {
                     Consome(tk.cat);
                 }
@@ -412,7 +412,7 @@ void BLOCK_DEF()
         if (tk.codigo == ABRE_COL)
         {
             Consome(ABRE_COL);
-            if (tk.cat == CONST_INT || tk.cat == ID_CONST)
+            if (tk.cat == CONST_INT || tk.cat == CONST_INT)
             {
                 Consome(tk.cat);
             }
@@ -427,7 +427,7 @@ void BLOCK_DEF()
             if (tk.codigo == ABRE_COL)
             {
                 Consome(ABRE_COL);
-                if (tk.cat == CONST_INT || tk.cat == ID_CONST)
+                if (tk.cat == CONST_INT || tk.cat == CONST_INT)
                 {
                     Consome(tk.cat);
                 }
@@ -474,7 +474,7 @@ void DECL_VAR()
     if (tk.codigo == ABRE_COL)
     {
         Consome(ABRE_COL);
-        if (tk.cat == CONST_INT || tk.cat == ID_CONST)
+        if (tk.cat == CONST_INT || tk.cat == CONST_INT)
         {
             Consome(tk.cat);
         }
@@ -485,7 +485,7 @@ void DECL_VAR()
     {
         printf("ATRIB Entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
         Consome(ATRIB);
-        if (tk.cat == CONST_INT || tk.cat == CONST_FLOAT || tk.cat == CONST_CHAR || tk.cat == LITERAL)
+        if (tk.cat == CONST_INT || tk.cat == CT_F || tk.cat == CT_C || tk.cat == LT)
         {
             printf("CONSTANTES Entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
             Consome(tk.cat);
@@ -495,7 +495,7 @@ void DECL_VAR()
             Consome(ABRE_CHAVE);
             do
             {
-                if (tk.cat == CONST_INT || tk.cat == CONST_FLOAT || tk.cat == CONST_CHAR || tk.cat == LITERAL)
+                if (tk.cat == CONST_INT || tk.cat == CT_F || tk.cat == CT_C || tk.cat == LT)
                 {
                     Consome(tk.cat);
                 }
@@ -534,8 +534,8 @@ void ATRIB()
 void EXPR()
 {
     EXPR_SIMP();
-    if (tk.codigo == IGUALDADE || tk.codigo == DIFERENTE || tk.codigo == MENORIGUAL ||
-        tk.codigo == MENOR_QUE || tk.codigo == MAIORIGUAL || tk.codigo == MAIOR_QUE)
+    if (tk.codigo == IGUAL || tk.codigo == DIFERENTE || tk.codigo == MENORIGUAL ||
+        tk.codigo == MENOR || tk.codigo == MAIORIGUAL || tk.codigo == MAIOR)
     {
         OPERADOR_REL();
         EXPR_SIMP();
@@ -582,13 +582,13 @@ void FATOR()
     {
         Consome(CONST_INT);
     }
-    else if (tk.cat == CONST_FLOAT)
+    else if (tk.cat == CT_F)
     {
-        Consome(CONST_FLOAT);
+        Consome(CT_F);
     }
-    else if (tk.cat == CONST_CHAR)
+    else if (tk.cat == CT_C)
     {
-        Consome(CONST_CHAR);
+        Consome(CT_C);
     }
     else if (tk.codigo == ABRE_PAR)
     {
@@ -609,8 +609,8 @@ void FATOR()
 
 void OPERADOR_REL()
 {
-    if (tk.codigo == IGUALDADE || tk.codigo == DIFERENTE || tk.codigo == MENORIGUAL ||
-        tk.codigo == MENOR_QUE || tk.codigo == MAIORIGUAL || tk.codigo == MAIOR_QUE)
+    if (tk.codigo == IGUAL || tk.codigo == DIFERENTE || tk.codigo == MENORIGUAL ||
+        tk.codigo == MENOR || tk.codigo == MAIORIGUAL || tk.codigo == MAIOR)
     {
         Consome(tk.codigo);
     }

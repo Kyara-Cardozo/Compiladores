@@ -21,12 +21,13 @@ enum TOKEN_CAT {
 
 
 enum PAL_RESERV { // Palavras reservadas 
-  CLASS = 1,
+  MAIN = 1,
   DATA,
   CODE,
   INTERN,
   VOID,
   CHAR,
+  WITH,
   INT,
   FLOAT,
   BOOL,
@@ -40,6 +41,7 @@ enum PAL_RESERV { // Palavras reservadas
   ENDBLOCK,
   BLOCK,
   VARYING,
+  GETREAL,
   TO,
   DO,
   REAL,
@@ -51,10 +53,18 @@ enum PAL_RESERV { // Palavras reservadas
   GOBACK,
   GETINT,
   GETCHAR,
+  ENDWHILE,
   PUTINT,
-  PUTREAL
+  PUTREAL,
+  PUTCHAR
 };
 
+enum OP_LOGIC
+{
+    AND_LOGIC = 1, // &&
+    OR_LOGIC,      // ||
+    NOT_LOGIC      // !
+};
 
 enum SINAIS {// Sinais válidos da linguagem
   ABRE_CHAVE,
@@ -85,7 +95,8 @@ enum SINAIS {// Sinais válidos da linguagem
   SOMA,
   SUBTRACAO,
   VIRGULA,
-  REFERENCIA
+  REFERENCIA,
+  IGUAL
 };
 
 

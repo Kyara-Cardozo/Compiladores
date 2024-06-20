@@ -17,22 +17,22 @@ void processa_tokens(FILE *fd)
         case CONST_INT:
             printf("<CONST_INT, %d>\n", tk.valInt);
             break;
-        case CONST_FLOAT:
-            printf("<CONST_FLOAT, %0.2f>\n", tk.valFloat);
+        case CT_F:
+            printf("<CT_F, %0.2f>\n", tk.valFloat);
             break;
-        case CONST_CHAR:
+        case CT_C:
             printf("<CONST_CHAR, %s>\n", tk.lexema);
             break;
-        case LITERAL:
+        case LT:
             printf("<LITERAL, %s>\n", tk.lexema);
             break;
         case FIM_EXPR:
             printf("<FIM EXPRESSAO>\n\n");
             break;
-        case FIM_PROG:
+        case FIM_ARQ:
             printf("\nFIM DO ARQUIVO\n");
             return; 
-        case SINAL:
+        case SN:
             switch (tk.codigo)
             {
             case VIRGULA:
@@ -157,17 +157,17 @@ void processa_tokens(FILE *fd)
         case OP_ARIT:
             switch (tk.codigo)
             {
-            case ATRIBUICAO:
-                printf("<OP_ARIT, ATRIBUICAO>\n");
+            case ATRIB:
+                printf("<OP_ARIT, ATRIB>\n");
                 break;
-            case ADICAO:
-                printf("<OP_ARIT, ADICAO>\n");
+            case SOMA:
+                printf("<OP_ARIT, SOMA>\n");
                 break;
             case SUBTRACAO:
                 printf("<OP_ARIT, SUBTRACAO>\n");
                 break;
-            case MULTIPLICACAO:
-                printf("<OP_ARIT, MULTIPLICACAO>\n");
+            case MULTIPLIC:
+                printf("<OP_ARIT, MULTIPLIC>\n");
                 break;
             case DIVISAO:
                 printf("<OP_ARIT, DIVISAO>\n");
@@ -195,30 +195,30 @@ void processa_tokens(FILE *fd)
         case OP_RELAC:
             switch (tk.codigo)
             {
-            case IGUALDADE:
-                printf("<OP_RELAC, IGUALDADE>\n");
+            case IGUAL:
+                printf("<OP_RELAC, IGUAL>\n");
                 break;
             case DIFERENTE:
                 printf("<OP_RELAC, DIFERENTE>\n");
                 break;
-            case MENOR_IGUAL:
-                printf("<OP_RELAC, MENOR_IGUAL>\n");
+            case MENORIGUAL:
+                printf("<OP_RELAC, MENORIGUAL>\n");
                 break;
-            case MAIOR_IGUAL:
-                printf("<OP_RELAC, MAIOR_IGUAL>\n");
+            case MAIORIGUAL:
+                printf("<OP_RELAC, MAIORIGUAL>\n");
                 break;
-            case MENOR_QUE:
-                printf("<OP_RELAC, MENOR_QUE>\n");
+            case MENOR:
+                printf("<OP_RELAC, MENOR>\n");
                 break;
-            case MAIOR_QUE:
-                printf("<OP_RELAC, MAIOR_QUE>\n");
+            case MAIOR:
+                printf("<OP_RELAC, MAIOR>\n");
                 break;
             default:
                 break;
             }
             break;
         }
-        if (tk.cat == FIM_PROG)
+        if (tk.cat == FIM_ARQ)
         {
             break;
         }
