@@ -1,4 +1,4 @@
-#include "AnalexObjC.h"
+#include "Analex.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ int armazenaLiteral(char literal[]) {
 
 TOKEN AnaLex(FILE *fd) {
 
-  char reserv[20][20] = {"bool", "char", "class",                           "code", "data", "delete",                          "else", "float","for",                             "if", "int", "intern",                             "new", "return", "void",                           "while"};
+  char reserv[20][20] = {"bool", "char", "class","code", "data", "delete","else", "float","for","if", "int", "intern","new", "return", "void","while"};
 
 
   int estado;
