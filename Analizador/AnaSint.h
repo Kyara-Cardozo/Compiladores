@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 
-extern TOKEN tk;
+extern TOKEN t;
 extern FILE *fd;
 extern int contLinha;
 
