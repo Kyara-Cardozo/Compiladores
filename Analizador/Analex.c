@@ -696,7 +696,7 @@ int main() {
         printf("<SN, AND> ");
         break;
 
-      case OR:
+      case OR :
         printf("<SN, OR> ");
         break;
 
