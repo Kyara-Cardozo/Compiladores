@@ -63,7 +63,7 @@ void processa_tokens(FILE *fd)
                 break;
             }
             break;
-        case PAL_RESERV:
+        case PR:
             switch (tk.codigo)
             {
             case MAIN:

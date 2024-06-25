@@ -16,7 +16,7 @@ enum TOKEN_CAT {
   CT_C,         // Constante caractere
   CT_NULL,      // Valor nulo
   CT_NEWLINE,   // Nova linha
-  CONST_INT     
+  CONST_INT  
 };
 
 
@@ -56,7 +56,8 @@ enum PAL_RESERV { // Palavras reservadas
   ENDWHILE,
   PUTINT,
   PUTREAL,
-  PUTCHAR
+  PUTCHAR,
+  FIM_EXPR
 };
 
 enum OP_LOGIC
@@ -73,30 +74,42 @@ enum SINAIS {// Sinais válidos da linguagem
   FECHA_COL,
   ABRE_PAR,
   FECHA_PAR,
-  AND,
-  ATRIB,
   COMPARACAO,
   DESTRUTOR,
-  DIFERENTE,
-  DIVISAO,
   DOISPONTOS,
   ENDERECO,
   ESCOPO,
-  MAIOR,
-  MAIORIGUAL,
-  MENOR,
-  MENORIGUAL,
-  MULTIPLIC,
-  NEGACAO,
-  OR,
   PONTO,
   PONTO_VIRG,
   PONTEIRO,
-  SOMA,
-  SUBTRACAO,
   VIRGULA,
   REFERENCIA,
-  IGUAL
+};
+
+enum OP_ARIT
+{
+  ATRIB = 1, // =
+  SOMA, // +
+  SUBTRACAO, // -
+  DIVISAO, // /
+  MULTIPLIC // *
+};
+
+enum OP_RELAC 
+{
+  IGUAL = 1,  // ==
+  DIFERENTE, // !=
+  MAIOR, // >
+  MAIORIGUAL, // >=
+  MENOR, // <
+  MENORIGUAL // <=
+};
+
+enum OP_LOGIC 
+{
+  AND,   // &&
+  OR,  // ||
+  NEGACAO,  // !
 };
 
 
