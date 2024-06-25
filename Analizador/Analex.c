@@ -677,7 +677,7 @@ int main() {
         break;
 
       case MAIOR:
-        printf("<SN, MAIOR> ");
+        printf(" <SN, MAIOR> ");
         break;
 
       case MENOR:
