@@ -16,7 +16,10 @@ enum TOKEN_CAT {
   CT_C,         // Constante caractere
   CT_NULL,      // Valor nulo
   CT_NEWLINE,   // Nova linha
-  CONST_INT  
+  CONST_INT ,
+  OP_ARIT,
+  OP_LOGIC,   
+  OP_RELAC
 };
 
 

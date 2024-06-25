@@ -578,24 +578,24 @@ TOKEN AnaLex(FILE *fd) {
 int main() {
 
   FILE *fd;
-  TOKEN tk;
+  TOKEN t;
 
   if ((fd = fopen("expressao.dat", "r")) == NULL)
     error(contLinha,"Arquivo expressão de entrada  não foi encontrado!");
 
   while (1) {
-    tk = AnaLex(fd);
-    switch (tk.cat) {
+    t = AnaLex(fd);
+    switch (t.cat) {
     case ID:
-      printf("<ID, %s> ", tk.lexema);
+      printf("<ID, %s> ", t.lexema);
       break;
 
     case LT:
-       printf("<LT, %s> ", tableLiterais[tk.indice]); 
+       printf("<LT, %s> ", tableLiterais[t.indice]); 
       break;
 
     case SN:
-      switch (tk.codigo) {
+      switch (t.codigo) {
       case SOMA:
         printf("<SN, SOMA> ");
         break;
@@ -712,15 +712,15 @@ int main() {
       break;
 
     case CT_I:
-      printf("<CT_I, %d> ", tk.valInt);
+      printf("<CT_I, %d> ", t.valInt);
       break;
 
     case CT_F:
-      printf("<CT_F, %f> ", tk.valFloat);
+      printf("<CT_F, %f> ", t.valFloat);
       break;
 
     case CT_C:
-      printf("<CT_C, %c> ", tk.caractere);
+      printf("<CT_C, %c> ", t.caractere);
       break;
 
     case CT_NEWLINE:
@@ -732,7 +732,7 @@ int main() {
       break;
 
     case PR:
-      printf("<PR, %s> ", tk.lexema);
+      printf("<PR, %s> ", t.lexema);
       break;
 
     case FIM_ARQ:
@@ -740,7 +740,7 @@ int main() {
       break;
     }
 
-    if (tk.cat == FIM_ARQ)
+    if (t.cat == FIM_ARQ)
       break;
   }
 

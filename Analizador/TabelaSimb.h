@@ -29,7 +29,7 @@ typedef
         }  TabIdef;
     
 extern TabIdef tabela_idef;
-extern TOKEN tk;
+extern TOKEN t;
 
 void Iniciar_tabela();
 int Busca_tabela(char lexema[]);
