@@ -19,7 +19,7 @@ int main()
         return 1;
     }
 
-    processador_tokens(fd);
+    processa_tokens(fd);
 
     fclose(fd);
 
