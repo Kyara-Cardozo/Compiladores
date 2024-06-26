@@ -8,7 +8,6 @@ enum MOVIM
     RETROCEDE
 };
 
-// extern enum BOOL mostraArvore;
 extern char TABS[200];
 
 void errorLex(int contLinha, char caracter);

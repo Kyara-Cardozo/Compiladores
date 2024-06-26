@@ -2,7 +2,8 @@
     "files.associations": {
         "*.embeddedhtml": "html",
         "stdio.h": "c",
-        "Analex.h": "c"
+        "Analex.h": "c",
+        "funcaux.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
