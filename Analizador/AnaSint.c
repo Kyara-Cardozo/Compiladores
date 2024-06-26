@@ -6,795 +6,569 @@
 #include "Analex.h"
 #include "AnaSint.h"
 
-void Consome(int esperado)
+void consome(int esperado)
 {
-    if (t.cat == esperado || t.codigo == esperado)
+    if (tk.cat == esperado || tk.codigo == esperado)
     {
-        printf("[Consome][Entrada] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-        t = Analex(fd);
-        printf("[Consome][Saida] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
+        printf("[CONSOME][Entrada] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
+        tk = AnaLex(fd);
+        printf("[CONSOME][Saida] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
     }
     else
     {
-        printf("[ERROR] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
+        printf("[ERROR] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
         char errMsg[100];
-        sprintf(errMsg, "Opa! Token não esperado. Esperava:  %d, Encontrei: %d", esperado, t.codigo);
+        sprintf(errMsg, "Token inesperado. Esperado: %d, Encontrado: %d", esperado, tk.codigo);
         errorSint(contLinha, errMsg);
     }
 }
 
-void PROG()
+void prog()
 {
-    t = Analex(fd);
+    tk = AnaLex(fd);
 
-    printf("PROG - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-    while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
+    printf("PROG - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
+    while (tk.cat == PAL_RESERV && (tk.codigo == CONST || tk.codigo == INT || tk.codigo == CHAR || tk.codigo == REAL || tk.codigo == BOOL))
     {
-        DECL_LIST_VAR();
+        decl_list_var();
     }
 
-    while (t.cat == PR && t.codigo == BLOCK)
+    while (tk.cat == PAL_RESERV && tk.codigo == BLOCK)
     {
-        printf("[DECL_BLOCK_PROT][WHILE][Entrada]\n");
-        DECL_BLOCK_PROT();
-        printf("[DECL_BLOCK_PROT][WHILE][Saida]\n");
+        printf("[BLOCK][WHILE][Entrada]\n");
+        decl_block_prot();
+        printf("[BLOCK][WHILE][Saida]\n");
     }
 
-    if (!(t.cat == PR && t.codigo == MAIN))
+    printf("PROG - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
+    if (!(tk.cat == PAL_RESERV && tk.codigo == MAIN))
     {
-        errorSint(contLinha, "Esperava declaração do bloco Main.");
+        errorSint(contLinha, "Declaracao de bloco main esperada.");
     }
 
-    BLOACK_MAIN();
+    block_main();
 
-    while (t.cat == PR && t.codigo == BLOCK)
+    while (tk.cat == PAL_RESERV && tk.codigo == BLOCK)
     {
-        BLOCK_DEF();
+        block_def();
     }
 
-    if (t.cat != FIM_ARQ)
+    if (tk.cat != FIM_PROG)
     {
-        errorSint(contLinha, "Esperava fim do arquivo.");
+        errorSint(contLinha, "Fim do Arquivo Esperado");
     }
 }
 
-void DECL_LIST_VAR()
+void decl_list_var()
 {
-    printf("\nENTROU -> DECL_LIST_VAR\n");
+    printf("\nENTROU -> decl_list_var\n");
 
-    if (t.codigo == CONST)
+    if (tk.codigo == CONST)
     {
-        Consome(CONST);
+        consome(CONST);
     }
-    TIPO();
-    DECL_VAR();
+    tipo();
+    decl_var();
 
-    while (t.codigo == VIRGULA)
+    while (tk.codigo == VIR)
     {
-        Consome(VIRGULA);
-        DECL_VAR();
+        consome(VIR);
+        decl_var();
     }
 
-    printf("\nSAIU -> DECL_LIST_VAR\n");
+    printf("\nSAIU -> decl_list_var\n");
 }
 
-void DECL_BLOCK_PROT()
+void decl_block_prot()
 {
-    printf("\nENTROU -> DECL_BLOCK_PROT\n");
-    Consome(BLOCK);
-    Consome(ID);
+    printf("\nENTROU -> decl_block_prot\n");
+    consome(BLOCK);
 
-    if (t.codigo == WITH)
+    if (tk.codigo != MAIN)
     {
-        printf("[DECL_BLOCK_PROT][WITH][Entrada]\n\n");
-        Consome(WITH);
+        consome(ID);
 
-        while (true)
+        if (tk.codigo == WITH)
         {
-            if (t.cat == FIM_ARQ || t.codigo == BLOCK)
+            printf("[decl_block_prot][WITH][Entrada]\n\n");
+            consome(WITH);
+
+            while (true)
             {
-                break;
-            }
-
-            if (t.codigo == REFERENCIA)
-            {
-                printf("[DECL_BLOCK_PROT][Referência][Entrada]\n");
-                Consome(REFERENCIA);
-                printf("[DECL_BLOCK_PROT][Referência][Saida]\n\n");
-            }
-
-            TIPO();
-
-            if (t.codigo == ABRE_COL)
-            {
-                printf("[DECL_BLOCK_PROT][ABRE_COL][Entrada]\n");
-                Consome(ABRE_COL);
-                printf("[DECL_BLOCK_PROT][ABRE_COL][Saida]\n\n");
-
-                printf("[DECL_BLOCK_PROT][FECHA_COL][Entrada]\n");
-                Consome(FECHA_COL);
-                printf("[DECL_BLOCK_PROT][FECHA_COL][Saida]\n\n");
-            }
-            if (t.codigo == VIRGULA)
-            {
-                printf("[DECL_BLOCK_PROT][Virgula][Entrada]\n");
-                Consome(VIRGULA);
-                printf("[DECL_BLOCK_PROT][Virgula][Saida]\n\n");
-            }
-        }
-        printf("[DECL_BLOCK_PROT][WITH][Saida]\n\n");
-    }
-    printf("\nSAIU -> DECL_BLOCK_PROT\n");
-}
-
-void BLOACK_MAIN()
-{
-    printf("\nENTROU -> BLOACK_MAIN\n\n");
-    Consome(BLOCK);
-    Consome(MAIN);
-
-    while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
-    {
-        DECL_LIST_VAR();
-    }
-
-    while (t.codigo != ENDBLOCK)
-     {
-    }
-    Consome(ENDBLOCK);
-
-    printf("\nSAIU -> BLOACK_MAIN\n");
-}
-
-void BLOCK_DEF()
-{
-    printf("\nENTROU -> BLOCK_DEF\n");
-    Consome(BLOCK);
-    Consome(ID);
-
-    if (t.codigo == WITH)
-    {
-        Consome(WITH);
-        TIPO();
-        Consome(ID);
-
-        if (t.codigo == ABRE_COL)
-        {
-            Consome(ABRE_COL);
-            if (t.cat == CONST_INT || t.cat == CONST_INT)
-            {
-                Consome(t.cat);
-            }
-            Consome(FECHA_COL);
-        }
-
-        while (t.codigo == VIRGULA)
-        {
-            Consome(VIRGULA);
-            TIPO();
-            Consome(ID);
-            if (t.codigo == ABRE_COL)
-            {
-                Consome(ABRE_COL);
-                if (t.cat == CONST_INT || t.cat == CONST_INT)
+                if (tk.cat == FIM_PROG || tk.codigo == MAIN || tk.codigo == BLOCK)
                 {
-                    Consome(t.cat);
+                    break;
                 }
-                Consome(FECHA_COL);
+
+                if (tk.codigo == REF)
+                {
+                    printf("[decl_block_prot][REF][Entrada]\n");
+                    consome(REF);
+                    printf("[decl_block_prot][REF][Saida]\n\n");
+                }
+
+                tipo();
+
+                if (tk.codigo == ABRE_COL)
+                {
+                    printf("[decl_block_prot][ABRE_COL][Entrada]\n");
+                    consome(ABRE_COL);
+                    printf("[decl_block_prot][ABRE_COL][Saida]\n\n");
+
+                    printf("[decl_block_prot][FECHA_COL][Entrada]\n");
+                    consome(FECHA_COL);
+                    printf("[decl_block_prot][FECHA_COL][Saida]\n\n");
+                }
+                if (tk.codigo == VIR)
+                {
+                    printf("[decl_block_prot][VIR][Entrada]\n");
+                    consome(VIR);
+                    printf("[decl_block_prot][VIR][Saida]\n\n");
+                }
+            }
+            printf("[decl_block_prot][WITH][Saida]\n\n");
+        }
+    }
+
+    printf("\nSAIU -> decl_block_prot\n");
+}
+
+void block_main()
+{
+    printf("\nENTROU -> block_main\n\n");
+    consome(MAIN);
+
+    while (tk.cat == PAL_RESERV && (tk.codigo == CONST || tk.codigo == INT || tk.codigo == CHAR || tk.codigo == REAL || tk.codigo == BOOL))
+    {
+        decl_list_var();
+    }
+
+    while (tk.codigo != ENDBLOCK)
+    {
+        cmd();
+    }
+    consome(ENDBLOCK);
+
+    printf("\nSAIU -> block_main\n");
+}
+
+void block_def()
+{
+    printf("\nENTROU -> block_def\n");
+    consome(BLOCK);
+    consome(ID);
+
+    if (tk.codigo == WITH)
+    {
+        consome(WITH);
+        tipo();
+        consome(ID);
+
+        if (tk.codigo == ABRE_COL)
+        {
+            consome(ABRE_COL);
+            if (tk.cat == CT_I || tk.cat == ID_CONST)
+            {
+                consome(tk.cat);
+            }
+            consome(FECHA_COL);
+        }
+
+        while (tk.codigo == VIR)
+        {
+            consome(VIR);
+            tipo();
+            consome(ID);
+            if (tk.codigo == ABRE_COL)
+            {
+                consome(ABRE_COL);
+                if (tk.cat == CT_I || tk.cat == ID_CONST)
+                {
+                    consome(tk.cat);
+                }
+                consome(FECHA_COL);
             }
         }
     }
 
-    while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
+    while (tk.cat == PAL_RESERV && (tk.codigo == CONST || tk.codigo == INT || tk.codigo == CHAR || tk.codigo == REAL || tk.codigo == BOOL))
     {
-        DECL_LIST_VAR();
+        decl_list_var();
     }
 
-    while (t.codigo != ENDBLOCK)
+    while (tk.codigo != ENDBLOCK)
     {
-        CMD();
+        cmd();
+        printf("<Resultado> Expressao OK!\n");
     }
-    Consome(ENDBLOCK);
-    printf("\nSAIU -> BLOCK_DEF\n");
+    consome(ENDBLOCK);
+    printf("\nSAIU -> block_def\n");
 }
 
-void TIPO()
+void tipo()
 {
-    printf("\nENTROU -> TIPO\n");
+    printf("\nENTROU -> tipo\n");
 
-    if (t.codigo == CHAR || t.codigo == INT || t.codigo == REAL || t.codigo == BOOL)
+    if (tk.codigo == CHAR || tk.codigo == INT || tk.codigo == REAL || tk.codigo == BOOL)
     {
-        printf("[TIPO][COD][Entrada]\n\n");
-        Consome(t.codigo);
+        printf("[tipo][COD][Entrada]\n\n");
+        consome(tk.codigo);
     }
     else
     {
-        printf("[TIPO][ERROR][Entrada]\n\n");
-        errorSint(contLinha, "Opa! Tipo invalido. ");
+        printf("[tipo][ERROR][Entrada]\n\n");
+        errorSint(contLinha, "Tipo invalido");
     }
-    printf("\nSAIU -> TIPO\n");
+    printf("\nSAIU -> tipo\n");
 }
 
-void DECL_VAR()
+void decl_var()
 {
-    printf("\nENTROU -> DECL_VAR\n");
-    Consome(ID);
+    printf("\nENTROU -> decl_var\n");
+    consome(ID);
 
-    if (t.codigo == ABRE_COL)
+    while (tk.codigo == ABRE_COL)
     {
-        printf("[DECL_VAR][ABRE_COL][Entrada]\n\n");
+        printf("[decl_var][ABRE_COL][Entrada]\n\n");
 
-        Consome(ABRE_COL);
-        if (t.cat == CONST_INT || t.cat == CONST_INT)
+        consome(ABRE_COL);
+        if (tk.cat == CT_I || tk.cat == ID)
         {
-            printf("[DECL_VAR][CONST_INT][Entrada]\n\n");
-            Consome(t.cat);
+            printf("[decl_var][CT_I][Entrada]\n\n");
+            consome(tk.cat);
         }
-        Consome(FECHA_COL);
+        consome(FECHA_COL);
     }
 
-    if (t.codigo == ATRIB)
+    if (tk.codigo == ATRIBUICAO)
     {
-        printf("[DECL_VAR][ATRIB][Entrada]\n\n");
-        Consome(ATRIB);
-        if (t.cat == CONST_INT || t.cat == CT_F || t.cat == CT_C || t.cat == LT)
+        printf("[decl_var][ATRIBUICAO][Entrada]\n\n");
+        consome(ATRIBUICAO);
+        if (tk.cat == CT_I || tk.cat == CT_F || tk.cat == CT_C || tk.cat == LT)
         {
-            printf("[DECL_VAR][ATRIB][CAT][Entrada]\n\n");
-            Consome(t.cat);
+            printf("[decl_var][ATRIBUICAO][CAT][Entrada]\n\n");
+            consome(tk.cat);
         }
-        else if (t.codigo == ABRE_CHAVE)
+        else if (tk.codigo == ABRE_CHAVE)
         {
-            printf("[DECL_VAR][ATRIB][ABRE_CHAVE][Entrada]\n\n");
-            Consome(ABRE_CHAVE);
+            printf("[decl_var][ATRIBUICAO][ABRE_CHAVE][Entrada]\n\n");
+            consome(ABRE_CHAVE);
             do
             {
-                if (t.cat == CONST_INT || t.cat == CT_F || t.cat == CT_C || t.cat == LT)
+                if (tk.cat == CT_I || tk.cat == CT_F || tk.cat == CT_C || tk.cat == LT)
                 {
-                    Consome(t.cat);
+                    consome(tk.cat);
                 }
-                if (t.codigo == VIRGULA)
+                if (tk.codigo == VIR)
                 {
-                    Consome(VIRGULA);
+                    consome(VIR);
                 }
                 else
                 {
                     break;
                 }
             } while (true);
-            Consome(FECHA_CHAVE);
+            consome(FECHA_CHAVE);
         }
         else
         {
-            printf("[DECL_VAR][ATRIB][ERRO][Entrada]\n\n");
+            printf("[decl_var][ATRIBUICAO][ERRO][Entrada]\n\n");
             errorSint(contLinha, "Valor esperado após '='.");
         }
-        printf("[DECL_VAR][ATRIB][Saida] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
+        printf("[decl_var][ATRIBUICAO][Saida] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", tk.cat, tk.codigo, tk.lexema, tk.valFloat, tk.valInt);
     }
-    printf("\nSAIU -> DECL_VAR\n");
+    printf("\nSAIU -> decl_var\n");
 }
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-#include "Analex.c"
-#include "Analex.h"
-#include "AnaSint.h"
-
-void Consome(int esperado)
+void atrib()
 {
-    if (t.cat == esperado || t.codigo == esperado)
+    consome(ID);
+    while (tk.codigo == ABRE_COL)
     {
-        printf("Consome entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-        t = Analex(fd);
-        printf("Consome saida - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
+        consome(ABRE_COL);
+        expr();
+        consome(FECHA_COL);
     }
-    else
-    {
-        printf("Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-        char errMsg[100];
-        sprintf(errMsg, "Opa! Token não esperado. Esperava:  %d, Encontrei: %d", esperado, t.codigo);
-        errorSint(contLinha, errMsg);
-    }
+    consome(ATRIBUICAO);
+    expr();
 }
 
-void PROG()
+void expr()
 {
-    t = Analex(fd);
-
-    printf("PROG - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-    while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
+    printf("\nENTROU -> expr\n");
+    expr_simp();
+    if (tk.cat == OP_RELAC && (tk.codigo == IGUALDADE || tk.codigo == DIFERENTE || tk.codigo == MENOR_IGUAL ||
+                               tk.codigo == MENOR || tk.codigo == MAIOR_IGUAL || tk.codigo == MAIOR))
     {
-        printf("\nENTROU -> DECL_LIST_VAR\n");
-        DECL_LIST_VAR();
+        op_rel();
+        expr_simp();
     }
-
-    while (t.cat == PR && t.codigo == BLOCK)
-    {
-        printf("\nENTROU -> DECL_BLOCK_PROT\n");
-        DECL_BLOCK_PROT();
-    }
-
-    if (!(t.cat == PR && t.codigo == MAIN))
-    {
-        errorSint(contLinha, "Esperava declaração do bloco Main.");
-    }
-
-    BLOACK_MAIN();
-
-    while (t.cat == PR && t.codigo == BLOCK)
-    {
-        BLOCK_DEF();
-    }
-
-    if (t.cat != FIM_ARQ)
-    {
-        errorSint(contLinha, "Esperava fim do arquivo.");
-    }
+    printf("\nSAIU -> expr\n");
 }
 
-void DECL_LIST_VAR()
+void expr_simp()
 {
-    if (t.codigo == CONST)
+    printf("\nENTROU -> expr_simp\n");
+    if (tk.codigo == SOMA || tk.codigo == SUBTRACAO)
     {
-        Consome(CONST);
+        consome(tk.codigo);
     }
-    TIPO();
-    DECL_VAR();
+    termo();
 
-    while (t.codigo == VIRGULA)
+    if ((tk.codigo == SOMA || tk.codigo == SUBTRACAO || tk.codigo == OR))
     {
-        Consome(VIRGULA);
-        DECL_VAR();
+        consome(tk.codigo);
+        termo();
     }
+
+    printf("\nSAIU -> expr_simp\n");
 }
 
-void DECL_BLOCK_PROT()
+void termo()
 {
-    Consome(BLOCK);
-    Consome(ID);
-
-    if (t.codigo == WITH)
+    printf("\nENTROU -> termo\n");
+    if (tk.cat != FIM_PROG)
     {
-        Consome(WITH);
 
-        do
+        fator();
+        while (tk.codigo == MULT || tk.codigo == DIV || tk.codigo == AND)
         {
-            Consome(REFERENCIA);
-            TIPO();
-            if (t.codigo == ABRE_COL)
-            {
-                Consome(ABRE_COL);
-                Consome(FECHA_COL);
-            }
-            if (t.codigo == VIRGULA)
-            {
-                Consome(VIRGULA);
-            }
-            else
-            {
-                break;
-            }
-        } while (true);
-    }
-}
-
-void BLOACK_MAIN()
-{
-    printf("\nENTROU -> BLOACK_MAIN\n");
-    Consome(BLOCK);
-    Consome(MAIN);
-
-    while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
-    {
-        DECL_LIST_VAR();
-    }
-
-    while (t.codigo != ENDBLOCK)
-    {
-        break;
-        // CMD();
-    }
-    Consome(ENDBLOCK);
-}
-
-void BLOCK_DEF()
-{
-    Consome(BLOCK);
-    Consome(ID);
-
-    if (t.codigo == WITH)
-    {
-        Consome(WITH);
-        TIPO();
-        Consome(ID);
-
-        if (t.codigo == ABRE_COL)
-        {
-            Consome(ABRE_COL);
-            if (t.cat == CONST_INT || t.cat == CONST_INT)
-            {
-                Consome(t.cat);
-            }
-            Consome(FECHA_COL);
-        }
-
-        while (t.codigo == VIRGULA)
-        {
-            Consome(VIRGULA);
-            TIPO();
-            Consome(ID);
-            if (t.codigo == ABRE_COL)
-            {
-                Consome(ABRE_COL);
-                if (t.cat == CONST_INT || t.cat == CONST_INT)
-                {
-                    Consome(t.cat);
-                }
-                Consome(FECHA_COL);
-            }
+            consome(tk.codigo);
+            fator();
         }
     }
-
-    while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
-    {
-        DECL_LIST_VAR();
-    }
-
-    while (t.codigo != ENDBLOCK)
-    {
-        break;
-        // CMD();
-    }
-    Consome(ENDBLOCK);
+    printf("\nSAIU -> termo\n");
 }
 
-void TIPO()
+void fator()
 {
-    printf("\nENTROU -> TIPO\n");
-    printf("Tipo entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-
-    if (t.codigo == CHAR || t.codigo == INT || t.codigo == REAL || t.codigo == BOOL)
+    printf("\nENTROU -> fator\n");
+    if (tk.cat == ID)
     {
-        printf("Tipo Dentro - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-        Consome(t.codigo);
-    }
-    else
-    {
-        errorSint(contLinha, "Opa! Tipo invalido. ");
-    }
-}
-
-void DECL_VAR()
-{
-    printf("\nENTROU -> DECL_VAR\n");
-    printf("DECL_VAR Entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-    Consome(ID);
-
-    if (t.codigo == ABRE_COL)
-    {
-        Consome(ABRE_COL);
-        if (t.cat == CONST_INT || t.cat == CONST_INT)
+        consome(ID);
+        while (tk.codigo == ABRE_COL)
         {
-            Consome(t.cat);
-        }
-        Consome(FECHA_COL);
-    }
-
-    if (t.codigo == ATRIB)
-    {
-        printf("ATRIB Entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-        Consome(ATRIB);
-        if (t.cat == CONST_INT || t.cat == CT_F || t.cat == CT_C || t.cat == LT)
-        {
-            printf("CONSTANTES Entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-            Consome(t.cat);
-        }
-        else if (t.codigo == ABRE_CHAVE)
-        {
-            Consome(ABRE_CHAVE);
-            do
-            {
-                if (t.cat == CONST_INT || t.cat == CT_F || t.cat == CT_C || t.cat == LT)
-                {
-                    Consome(t.cat);
-                }
-                if (t.codigo == VIRGULA)
-                {
-                    Consome(VIRGULA);
-                }
-                else
-                {
-                    break;
-                }
-            } while (true);
-            Consome(FECHA_CHAVE);
-        }
-        else
-        {
-            errorSint(contLinha, "Valor esperado após '='.");
-        }
-        printf("ATRIB Saida - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-    }
-}
-
-void ATRIB()
-{
-    Consome(ID);
-    while (t.codigo == ABRE_COL)
-    {
-        Consome(ABRE_COL);
-        EXPR();
-        Consome(FECHA_COL);
-    }
-    Consome(ATRIB);
-    EXPR();
-}
-
-void EXPR()
-{
-    EXPR_SIMP();
-    if (t.codigo == IGUAL || t.codigo == DIFERENTE || t.codigo == MENORIGUAL ||
-        t.codigo == MENOR || t.codigo == MAIORIGUAL || t.codigo == MAIOR)
-    {
-        OPERADOR_REL();
-        EXPR_SIMP();
-    }
-}
-
-void EXPR_SIMP()
-{
-    if (t.codigo == SOMA || t.codigo == SUBTRACAO)
-    {
-        Consome(t.codigo);
-    }
-    TERMO();
-    while (t.codigo == SOMA || t.codigo == SUBTRACAO || t.codigo == OR_LOGIC)
-    {
-        Consome(t.codigo);
-        TERMO();
-    }
-}
-
-void TERMO()
-{
-    FATOR();
-    while (t.codigo == MULTIPLIC || t.codigo == DIVISAO || t.codigo == AND_LOGIC)
-    {
-        Consome(t.codigo);
-        FATOR();
-    }
-}
-
-void FATOR()
-{
-    if (t.cat == ID)
-    {
-        Consome(ID);
-        while (t.codigo == ABRE_COL)
-        {
-            Consome(ABRE_COL);
-            EXPR();
-            Consome(FECHA_COL);
+            consome(ABRE_COL);
+            expr();
+            consome(FECHA_COL);
         }
     }
-    else if (t.cat == CONST_INT)
+    else if (tk.cat == CT_I)
     {
-        Consome(CONST_INT);
+        consome(CT_I);
     }
-    else if (t.cat == CT_F)
+    else if (tk.cat == CT_F)
     {
-        Consome(CT_F);
+        consome(CT_F);
     }
-    else if (t.cat == CT_C)
+    else if (tk.cat == CT_C)
     {
-        Consome(CT_C);
+        consome(CT_C);
     }
-    else if (t.codigo == ABRE_PAR)
+    else if (tk.codigo == ABRE_PAR)
     {
-        Consome(ABRE_PAR);
-        EXPR();
-        Consome(FECHA_PAR);
+        consome(ABRE_PAR);
+        expr();
+        consome(FECHA_PAR);
     }
-    else if (t.codigo == NOT_LOGIC)
+    else if (tk.codigo == NOT)
     {
-        Consome(NOT_LOGIC);
-        FATOR();
+        consome(NOT);
+        fator();
     }
-    else
-    {
-        errorSint(contLinha, "Fator invalido");
-    }
+    printf("\nSAIU -> fator\n");
 }
 
-void OPERADOR_REL()
+void op_rel()
 {
-    if (t.codigo == IGUAL || t.codigo == DIFERENTE || t.codigo == MENORIGUAL ||
-        t.codigo == MENOR || t.codigo == MAIORIGUAL || t.codigo == MAIOR)
+    printf("\nENTROU -> op_rel\n");
+    if (tk.codigo == IGUALDADE || tk.codigo == DIFERENTE || tk.codigo == MENOR_IGUAL ||
+        tk.codigo == MENOR || tk.codigo == MAIOR_IGUAL || tk.codigo == MAIOR)
     {
-        Consome(t.codigo);
+        consome(tk.codigo);
     }
     else
     {
         errorSint(contLinha, "Operador relacional esperado");
     }
+    printf("\nSAIU -> op_rel\n");
 }
 
-void CMD()
+void cmd()
 {
-    if (t.cat == PR)
+    if (tk.cat == PAL_RESERV)
     {
-        switch (t.codigo)
+        switch (tk.codigo)
         {
         case DO:
-            Consome(DO);
-            if (t.cat == ID)
+            consome(DO);
+            if (tk.cat == ID)
             {
-                Consome(ID);
-                if (t.codigo == WITH)
+                consome(ID);
+                if (tk.codigo == WITH)
                 {
-                    Consome(WITH);
-                    Consome(ID);
-                    while (t.codigo == VIRGULA)
+                    consome(WITH);
+                    consome(ID);
+                    while (tk.codigo == VIR)
                     {
-                        Consome(VIRGULA);
-                        Consome(ID);
+                        consome(VIR);
+                        consome(ID);
                     }
                 }
-                if (t.codigo == VARYING)
+                if (tk.codigo == VARYING)
                 {
-                    Consome(VARYING);
-                    Consome(ID);
-                    Consome(FROM);
-                    EXPR();
-                    if (t.codigo == TO)
+                    consome(VARYING);
+                    consome(ID);
+                    consome(FROM);
+                    expr();
+                    if (tk.codigo == TO)
                     {
-                        Consome(TO);
+                        consome(TO);
                     }
-                    else if (t.codigo == DOWNTO)
+                    else if (tk.codigo == DOWNTO)
                     {
-                        Consome(DOWNTO);
+                        consome(DOWNTO);
                     }
                     else
                     {
                         errorSint(contLinha, "Esperado 'to' ou 'downto'");
                     }
-                    EXPR();
+                    expr();
                 }
-                else if (t.codigo == WHILE)
+                else if (tk.codigo == WHILE)
                 {
-                    Consome(WHILE);
-                    Consome(ABRE_PAR);
-                    EXPR();
-                    Consome(FECHA_PAR);
+                    consome(WHILE);
+                    consome(ABRE_PAR);
+                    expr();
+                    consome(FECHA_PAR);
                 }
-                else if (t.codigo == FOR)
+                else if (tk.codigo == FOR)
                 {
-                    Consome(FOR);
-                    EXPR();
+                    consome(FOR);
+                    expr();
                 }
             }
             else
             {
-                CMD();
-                if (t.codigo == VARYING)
+                cmd();
+                if (tk.codigo == VARYING)
                 {
-                    Consome(VARYING);
-                    Consome(ID);
-                    Consome(FROM);
-                    EXPR();
-                    if (t.codigo == TO)
+                    consome(VARYING);
+                    consome(ID);
+                    consome(FROM);
+                    expr();
+                    if (tk.codigo == TO)
                     {
-                        Consome(TO);
+                        consome(TO);
                     }
-                    else if (t.codigo == DOWNTO)
+                    else if (tk.codigo == DOWNTO)
                     {
-                        Consome(DOWNTO);
+                        consome(DOWNTO);
                     }
                     else
                     {
                         errorSint(contLinha, "Esperado 'to' ou 'downto'");
                     }
-                    EXPR();
+                    expr();
                 }
-                else if (t.codigo == WHILE)
+                else if (tk.codigo == WHILE)
                 {
-                    Consome(WHILE);
-                    Consome(ABRE_PAR);
-                    EXPR();
-                    Consome(FECHA_PAR);
+                    consome(WHILE);
+                    consome(ABRE_PAR);
+                    expr();
+                    consome(FECHA_PAR);
                 }
-                else if (t.codigo == FOR)
+                else if (tk.codigo == FOR)
                 {
-                    Consome(FOR);
-                    EXPR();
+                    consome(FOR);
+                    expr();
                 }
             }
             break;
 
         case IF:
-            Consome(IF);
-            Consome(ABRE_PAR);
-            EXPR();
-            Consome(FECHA_PAR);
-            Consome(ABRE_CHAVE);
-            CMD();
-            Consome(FECHA_CHAVE);
-            while (t.codigo == ELSEIF)
+            consome(IF);
+            consome(ABRE_PAR);
+            expr();
+            consome(FECHA_PAR);
+            consome(ABRE_CHAVE);
+            cmd();
+            consome(FECHA_CHAVE);
+            while (tk.codigo == ELSEIF)
             {
-                Consome(ELSEIF);
-                Consome(ABRE_PAR);
-                EXPR();
-                Consome(FECHA_PAR);
-                Consome(ABRE_CHAVE);
-                CMD();
-                Consome(FECHA_CHAVE);
+                consome(ELSEIF);
+                consome(ABRE_PAR);
+                expr();
+                consome(FECHA_PAR);
+                consome(ABRE_CHAVE);
+                cmd();
+                consome(FECHA_CHAVE);
             }
-            if (t.codigo == ELSE)
+            if (tk.codigo == ELSE)
             {
-                Consome(ELSE);
-                Consome(ABRE_CHAVE);
-                CMD();
-                Consome(FECHA_CHAVE);
+                consome(ELSE);
+                consome(ABRE_CHAVE);
+                cmd();
+                consome(FECHA_CHAVE);
             }
-            Consome(ENDIF);
+            consome(ENDIF);
             break;
 
         case WHILE:
-            Consome(WHILE);
-            Consome(ABRE_PAR);
-            EXPR();
-            Consome(FECHA_PAR);
-            Consome(ABRE_CHAVE);
-            CMD();
-            Consome(FECHA_CHAVE);
-            Consome(ENDWHILE);
+            consome(WHILE);
+            consome(ABRE_PAR);
+            expr();
+            consome(FECHA_PAR);
+            consome(ABRE_CHAVE);
+            cmd();
+            consome(FECHA_CHAVE);
+            consome(ENDWHILE);
             break;
 
         case GOBACK:
-            Consome(GOBACK);
+            consome(GOBACK);
             break;
 
         case GETINT:
-            Consome(GETINT);
-            Consome(ID);
+            consome(GETINT);
+            consome(ID);
             break;
 
         case GETREAL:
-            Consome(GETREAL);
-            Consome(ID);
+            consome(GETREAL);
+            consome(ID);
             break;
 
         case GETCHAR:
-            Consome(GETCHAR);
-            Consome(ID);
+            consome(GETCHAR);
+            consome(ID);
             break;
 
         case PUTINT:
-            Consome(PUTINT);
-            Consome(ID);
+            consome(PUTINT);
+            consome(ID);
             break;
 
         case PUTREAL:
-            Consome(PUTREAL);
-            Consome(ID);
+            consome(PUTREAL);
+            consome(ID);
             break;
 
         case PUTCHAR:
-            Consome(PUTCHAR);
-            Consome(ID);
+            consome(PUTCHAR);
+            consome(ID);
             break;
 
         default:
-            errorSint(contLinha, "Opa! Comando inválido.");
+            errorSint(contLinha, "Comando inválido.");
         }
     }
-    else if (t.cat == ID)
+    else if (tk.cat == ID)
     {
-        ATRIB();
+        atrib();
     }
-    else
+    else if (tk.cat != FIM_PROG)
     {
-        errorSint(contLinha, "Opa! Comando inválido.");
+        errorSint(contLinha, "Comando inválido.");
     }
 }

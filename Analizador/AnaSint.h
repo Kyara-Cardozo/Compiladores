@@ -5,33 +5,33 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-
-extern TOKEN t;
+// Variáveis globais
+extern TOKEN tk;
 extern FILE *fd;
 extern int contLinha;
 
 extern bool mostraArvore;
 extern char TABS[200];
 
+// Funções do analisador sintático
+void prog();            // prog ::= {decl_list_var} {decl_block_prot} block_main {block_def}
+void decl_list_var();   // decl_list_var ::= [const] tipo decl_var { , decl_var}
+void decl_block_prot(); // decl_block_prot ::= block id [with [&] tipo { [ ] } { , [&] tipo { [ ] } }]
+void block_main();      // block_main ::= block main {decl_list_var} { cmd } endblock
+void decl_var();        // decl_var ::= id {[ intcon | idconst ]} [ = (intcon | realcon | charcon | stringcon | { (intcon | realcon | charcon | stringcon) {, (intcon | realcon | charcon | stringcon) } } ) ]
+void tipo();            // tipo ::= char | int | real | bool
+void block_def();       // block_def ::= block id [with tipo id1 { [intcon1 | idconst1] } { , tipo id2 { [intcon2 | idconst2] } }] {decl_list_var} { cmd } endblock
+void cmd();             // cmd ::= do (id [with id1 { , id2 }] | cmd ) varying idx from expr1 (to | downto) expr2
+                        //       | do (id [with id1 { , id2 }] | cmd ) while ( expr )
+                        //       | do (id [with id1 { , id2 }] | cmd ) [for expr times ]
+                        //       | if ( expr ) { cmd }{ elseif ( expr ) { cmd } } [ else { cmd }] endif
+                        //       | while ( expr ) { cmd } endwhile
+                        //       | atrib
+void atrib();           // Atribuição
+void expr();            // Expressão
+void expr_simp();       // Expressão simples
+void termo();           // Termo
+void fator();           // Fator
+void op_rel();          // Operador relacional
 
-void PROG();            // prog ::= {DECL_LIST_VAR} {DECL_BLOCK_PROT} BLOACK_MAIN {BLOCK_DEF}
-void DECL_LIST_VAR();   // DECL_LIST_VAR ::= [const] TIPO DECL_VAR { , DECL_VAR}
-void DECL_BLOCK_PROT(); // DECL_BLOCK_PROT ::= block id [with [&] TIPO { [ ] } { , [&] TIPO { [ ] } }]
-void BLOACK_MAIN();      // BLOACK_MAIN ::= block main {DECL_LIST_VAR} { CMD } endblock
-void DECL_VAR();        // DECL_VAR ::= id {[ intcon | idconst ]} [ = (intcon | realcon | charcon | stringcon | { (intcon | realcon | charcon | stringcon) {, (intcon | realcon | charcon | stringcon) } } ) ]
-void TIPO();            // TIPO ::= char | int | real | bool
-void BLOCK_DEF();       // BLOCK_DEF ::= block id [with TIPO id1 { [intcon1 | idconst1] } { , TIPO id2 { [intcon2 | idconst2] } }] {DECL_LIST_VAR} { CMD } endblock
-void CMD();             // CMD ::= do (id [with id1 { , id2 }] | CMD ) varying idx from EXPR1 (to | downto) EXPR2
-                        //       | do (id [with id1 { , id2 }] | CMD ) while ( EXPR )
-                        //       | do (id [with id1 { , id2 }] | CMD ) [for EXPR times ]
-                        //       | if ( EXPR ) { CMD }{ elseif ( EXPR ) { CMD } } [ else { CMD }] endif
-                        //       | while ( EXPR ) { CMD } endwhile
-                        //       | ATRIB
-void ATRIBUICAO();           // Atribuição
-void EXPR();            // Expressão
-void EXPR_SIMP();       // Expressão simples
-void TERMO();           // Termo
-void FATOR();           // Fator
-void OPERADOR_REL();          // Operador relacional
-
-#endif 
+#endif // ANASINT_H
