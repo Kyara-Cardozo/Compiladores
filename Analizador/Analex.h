@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#ifndef ANALEX
-#define ANALEX
+#ifndef Analex
+#define Analex
 #define TAM_MAX_LEXEMA 31
 
 // Enumeração que define as categorias possíveis para os tokens léxicos.
@@ -11,6 +11,7 @@ enum TOKEN_CAT {
   SN,           // Símbolo ou sinal
   LT,           // Cadeia de caracteres
   FIM_ARQ,      // Fim do arquivo
+  FIM_EXPR,      // Fim da expressão
   CT_I,         // Constante numérica inteira
   CT_F,         // Constante numérica real
   CT_C,         // Constante caractere
@@ -23,7 +24,7 @@ enum TOKEN_CAT {
 };
 
 
-enum PAL_RESERV { // Palavras reservadas 
+enum PR { // Palavras reservadas 
   MAIN = 1,
   DATA,
   CODE,
@@ -59,18 +60,10 @@ enum PAL_RESERV { // Palavras reservadas
   ENDWHILE,
   PUTINT,
   PUTREAL,
-  PUTCHAR,
-  FIM_EXPR
+  PUTCHAR
 };
 
-enum OP_LOGIC
-{
-    AND_LOGIC = 1, // &&
-    OR_LOGIC,      // ||
-    NOT_LOGIC      // !
-};
-
-enum SINAIS {// Sinais válidos da linguagem
+enum SINAIS { // Sinais válidos da linguagem
   ABRE_CHAVE,
   FECHA_CHAVE,
   ABRE_COL,
@@ -112,7 +105,7 @@ enum OP_LOGIC
 {
   AND,   // &&
   OR,  // ||
-  NEGACAO,  // !
+  NEGACAO // !
 };
 
 
@@ -139,11 +132,11 @@ typedef struct {
 
 
 
-extern TOKEN t;
+extern TOKEN tk;
 extern FILE *fd;
-const char *tableLiterais[300];
 
 
-TOKEN Analex(FILE *);
+
+TOKEN AnaLex(FILE *);
 
 #endif

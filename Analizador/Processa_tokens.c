@@ -1,30 +1,30 @@
 #include <stdio.h>
-#include "AnaLex.h"
-//#include "FuncAuxDoBlock.h"
+#include "Analex.h"
+#include "FuncAux.h"
 
 void processa_tokens(FILE *fd)
 {
-    TOKEN t;
+    TOKEN tk;
     while (1)
     {
-        t = AnaLex(fd);
+        tk = AnaLex(fd);
 
-        switch (t.cat)
+        switch (tk.cat)
         {
         case ID:
-            printf("<ID, %s>\n", t.lexema);
+            printf("<ID, %s>\n", tk.lexema);
             break;
         case CONST_INT:
-            printf("<CONST_INT, %d>\n", t.valInt);
+            printf("<CONST_INT, %d>\n", tk.valInt);
             break;
         case CT_F:
-            printf("<CT_F, %0.2f>\n", t.valFloat);
+            printf("<CT_F, %0.2f>\n", tk.valFloat);
             break;
         case CT_C:
-            printf("<CONST_CHAR, %s>\n", t.lexema);
+            printf("<CONST_CHAR, %s>\n", tk.lexema);
             break;
         case LT:
-            printf("<LITERAL, %s>\n", t.lexema);
+            printf("<LITERAL, %s>\n", tk.lexema);
             break;
         case FIM_EXPR:
             printf("<FIM EXPRESSAO>\n\n");
@@ -33,7 +33,7 @@ void processa_tokens(FILE *fd)
             printf("\nFIM DO ARQUIVO\n");
             return; 
         case SN:
-            switch (t.codigo)
+            switch (tk.codigo)
             {
             case VIRGULA:
                 printf("<SN, VIRGULA>\n");
@@ -64,7 +64,7 @@ void processa_tokens(FILE *fd)
             }
             break;
         case PR:
-            switch (t.codigo)
+            switch (tk.codigo)
             {
             case MAIN:
                 printf("<PR, main>\n");
@@ -155,7 +155,7 @@ void processa_tokens(FILE *fd)
             }
             break;
         case OP_ARIT:
-            switch (t.codigo)
+            switch (tk.codigo)
             {
             case ATRIB:
                 printf("<OP_ARIT, ATRIB>\n");
@@ -177,23 +177,23 @@ void processa_tokens(FILE *fd)
             }
             break;
         case OP_LOGIC:
-            switch (t.codigo)
+            switch (tk.codigo)
             {
-            case AND_LOGIC:
-                printf("<OP_LOGIC, AND_LOGIC>\n");
+            case AND:
+                printf("<OP_LOGIC, AND>\n");
                 break;
-            case OR_LOGIC:
-                printf("<OP_LOGIC, OR_LOGIC>\n");
+            case OR:
+                printf("<OP_LOGIC, OR>\n");
                 break;
-            case NOT_LOGIC:
-                printf("<OP_LOGIC, NOT_LOGIC>\n");
+            case NEGACAO:
+                printf("<OP_LOGIC, NEGACAO>\n");
                 break;
             default:
                 break;
             }
             break;
         case OP_RELAC:
-            switch (t.codigo)
+            switch (tk.codigo)
             {
             case IGUAL:
                 printf("<OP_RELAC, IGUAL>\n");
@@ -218,7 +218,7 @@ void processa_tokens(FILE *fd)
             }
             break;
         }
-        if (t.cat == FIM_ARQ)
+        if (tk.cat == FIM_ARQ)
         {
             break;
         }
