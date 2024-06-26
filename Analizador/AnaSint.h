@@ -1,7 +1,7 @@
 #ifndef ANASINT_H
 #define ANASINT_H
 
-#include "AnaLex.h"
+#include "Analex.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -27,7 +27,7 @@ void CMD();             // CMD ::= do (id [with id1 { , id2 }] | CMD ) varying i
                         //       | if ( EXPR ) { CMD }{ elseif ( EXPR ) { CMD } } [ else { CMD }] endif
                         //       | while ( EXPR ) { CMD } endwhile
                         //       | ATRIB
-void ATRIB();           // Atribuição
+void ATRIBUICAO();           // Atribuição
 void EXPR();            // Expressão
 void EXPR_SIMP();       // Expressão simples
 void TERMO();           // Termo

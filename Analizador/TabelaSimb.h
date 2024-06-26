@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "AnaLex.h"
+#include "Analex.h"
 #include <stdbool.h>
 
 #define TAM_MAX_TAB 100

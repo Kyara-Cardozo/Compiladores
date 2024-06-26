@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "AnaLex.c"
-#include "AnaLex.h"
+#include "Analex.c"
+#include "Analex.h"
 #include "AnaSint.h"
 
 void Consome(int esperado)
@@ -11,7 +11,7 @@ void Consome(int esperado)
     if (t.cat == esperado || t.codigo == esperado)
     {
         printf("[Consome][Entrada] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-        t = AnaLex(fd);
+        t = Analex(fd);
         printf("[Consome][Saida] - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
     }
     else
@@ -25,7 +25,7 @@ void Consome(int esperado)
 
 void PROG()
 {
-    t = AnaLex(fd);
+    t = Analex(fd);
 
     printf("PROG - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
     while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
@@ -277,8 +277,8 @@ void DECL_VAR()
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "AnaLex.c"
-#include "AnaLex.h"
+#include "Analex.c"
+#include "Analex.h"
 #include "AnaSint.h"
 
 void Consome(int esperado)
@@ -286,7 +286,7 @@ void Consome(int esperado)
     if (t.cat == esperado || t.codigo == esperado)
     {
         printf("Consome entrada - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
-        t = AnaLex(fd);
+        t = Analex(fd);
         printf("Consome saida - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
     }
     else
@@ -300,7 +300,7 @@ void Consome(int esperado)
 
 void PROG()
 {
-    t = AnaLex(fd);
+    t = Analex(fd);
 
     printf("PROG - Cat: %d | Cod: %d | Lex: %s | Float: %0.2f | Int: %d\n", t.cat, t.codigo, t.lexema, t.valFloat, t.valInt);
     while (t.cat == PR && (t.codigo == CONST || t.codigo == INT || t.codigo == CHAR || t.codigo == REAL || t.codigo == BOOL))
