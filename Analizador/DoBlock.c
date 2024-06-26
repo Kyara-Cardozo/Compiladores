@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "Analex.c"
 #include "FuncAux.c"
-#include "Processador_tokens.c"
+#include "Processa_tokens.c"
 
 FILE *fd;
 TOKEN tk;

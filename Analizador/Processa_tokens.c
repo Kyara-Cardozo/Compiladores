@@ -14,7 +14,7 @@ void processa_tokens(FILE *fd)
         case ID:
             printf("<ID, %s>\n", tk.lexema);
             break;
-        case CONST_INT:
+        case CT_I:
             printf("<CONST_INT, %d>\n", tk.valInt);
             break;
         case CT_F:
@@ -27,16 +27,16 @@ void processa_tokens(FILE *fd)
             printf("<LITERAL, %s>\n", tk.lexema);
             break;
         case FIM_EXPR:
-            printf("<FIM EXPRESSAO>\n\n");
+            printf("<FIM EXPAL_RESERVESSAO>\n\n");
             break;
-        case FIM_ARQ:
+        case FIM_PROG:
             printf("\nFIM DO ARQUIVO\n");
             return; 
         case SN:
             switch (tk.codigo)
             {
-            case VIRGULA:
-                printf("<SN, VIRGULA>\n");
+            case VIR:
+                printf("<SN, VIR>\n");
                 break;
             case ABRE_PAR:
                 printf("<SN, ABRE_PAR>\n");
@@ -56,99 +56,99 @@ void processa_tokens(FILE *fd)
             case FECHA_COL:
                 printf("<SN, FECHA_COL>\n");
                 break;
-            case REFERENCIA:
-                printf("<SN, REFERENCIA>\n");
+            case REF:
+                printf("<SN, REF>\n");
                 break;
             default:
                 break;
             }
             break;
-        case PR:
+        case PAL_RESERV:
             switch (tk.codigo)
             {
             case MAIN:
-                printf("<PR, main>\n");
+                printf("<PAL_RESERV, main>\n");
                 break;
             case BLOCK:
-                printf("<PR, block>\n");
+                printf("<PAL_RESERV, block>\n");
                 break;
             case ENDBLOCK:
-                printf("<PR, endblock>\n");
+                printf("<PAL_RESERV, endblock>\n");
                 break;
             case CONST:
-                printf("<PR, const>\n");
+                printf("<PAL_RESERV, const>\n");
                 break;
             case CHAR:
-                printf("<PR, char>\n");
+                printf("<PAL_RESERV, char>\n");
                 break;
             case INT:
-                printf("<PR, int>\n");
+                printf("<PAL_RESERV, int>\n");
                 break;
             case REAL:
-                printf("<PR, real>\n");
+                printf("<PAL_RESERV, real>\n");
                 break;
             case BOOL:
-                printf("<PR, bool>\n");
+                printf("<PAL_RESERV, bool>\n");
                 break;
             case WITH:
-                printf("<PR, with>\n");
+                printf("<PAL_RESERV, with>\n");
                 break;
             case DO:
-                printf("<PR, do>\n");
+                printf("<PAL_RESERV, do>\n");
                 break;
             case VARYING:
-                printf("<PR, varying>\n");
+                printf("<PAL_RESERV, varying>\n");
                 break;
             case FROM:
-                printf("<PR, from>\n");
+                printf("<PAL_RESERV, from>\n");
                 break;
             case TO:
-                printf("<PR, to>\n");
+                printf("<PAL_RESERV, to>\n");
                 break;
             case DOWNTO:
-                printf("<PR, downto>\n");
+                printf("<PAL_RESERV, downto>\n");
                 break;
             case WHILE:
-                printf("<PR, while>\n");
+                printf("<PAL_RESERV, while>\n");
                 break;
             case ENDWHILE:
-                printf("<PR, endwhile>\n");
+                printf("<PAL_RESERV, endwhile>\n");
                 break;
             case FOR:
-                printf("<PR, for>\n");
+                printf("<PAL_RESERV, for>\n");
                 break;
             case IF:
-                printf("<PR, if>\n");
+                printf("<PAL_RESERV, if>\n");
                 break;
             case ENDIF:
-                printf("<PR, endif>\n");
+                printf("<PAL_RESERV, endif>\n");
                 break;
             case ELSEIF:
-                printf("<PR, elseif>\n");
+                printf("<PAL_RESERV, elseif>\n");
                 break;
             case ELSE:
-                printf("<PR, else>\n");
+                printf("<PAL_RESERV, else>\n");
                 break;
             case GOBACK:
-                printf("<PR, goback>\n");
+                printf("<PAL_RESERV, goback>\n");
                 break;
             case GETCHAR:
-                printf("<PR, getchar>\n");
+                printf("<PAL_RESERV, getchar>\n");
                 break;
             case PUTINT:
-                printf("<PR, putint>\n");
+                printf("<PAL_RESERV, putint>\n");
                 break;
             case GETINT:
-                printf("<PR, getint>\n");
+                printf("<PAL_RESERV, getint>\n");
                 break;
             case GETREAL:
-                printf("<PR, getreal>\n");
+                printf("<PAL_RESERV, getreal>\n");
                 break;
             case PUTREAL:
-                printf("<PR, putreal>\n");
+                printf("<PAL_RESERV, putreal>\n");
                 break;
             case PUTCHAR:
-                printf("<PR, putchar>\n");
+                printf("<PAL_RESERV, putchar>\n");
                 break;
             default:
                 break;
@@ -157,8 +157,8 @@ void processa_tokens(FILE *fd)
         case OP_ARIT:
             switch (tk.codigo)
             {
-            case ATRIB:
-                printf("<OP_ARIT, ATRIB>\n");
+            case ATRIBUICAO:
+                printf("<OP_ARIT, ATRIBUICAO>\n");
                 break;
             case SOMA:
                 printf("<OP_ARIT, SOMA>\n");
@@ -166,11 +166,11 @@ void processa_tokens(FILE *fd)
             case SUBTRACAO:
                 printf("<OP_ARIT, SUBTRACAO>\n");
                 break;
-            case MULTIPLIC:
-                printf("<OP_ARIT, MULTIPLIC>\n");
+            case MULT:
+                printf("<OP_ARIT, MULT>\n");
                 break;
-            case DIVISAO:
-                printf("<OP_ARIT, DIVISAO>\n");
+            case DIV:
+                printf("<OP_ARIT, DIV>\n");
                 break;
             default:
                 break;
@@ -185,8 +185,8 @@ void processa_tokens(FILE *fd)
             case OR:
                 printf("<OP_LOGIC, OR>\n");
                 break;
-            case NEGACAO:
-                printf("<OP_LOGIC, NEGACAO>\n");
+            case NOT:
+                printf("<OP_LOGIC, NOT>\n");
                 break;
             default:
                 break;
@@ -195,17 +195,17 @@ void processa_tokens(FILE *fd)
         case OP_RELAC:
             switch (tk.codigo)
             {
-            case IGUAL:
+            case IGUALDADE:
                 printf("<OP_RELAC, IGUAL>\n");
                 break;
             case DIFERENTE:
                 printf("<OP_RELAC, DIFERENTE>\n");
                 break;
-            case MENORIGUAL:
-                printf("<OP_RELAC, MENORIGUAL>\n");
+            case MENOR_IGUAL:
+                printf("<OP_RELAC, MENOR_IGUAL>\n");
                 break;
-            case MAIORIGUAL:
-                printf("<OP_RELAC, MAIORIGUAL>\n");
+            case MAIOR_IGUAL:
+                printf("<OP_RELAC, MAIOR_IGUAL>\n");
                 break;
             case MENOR:
                 printf("<OP_RELAC, MENOR>\n");
@@ -218,7 +218,7 @@ void processa_tokens(FILE *fd)
             }
             break;
         }
-        if (tk.cat == FIM_ARQ)
+        if (tk.cat == FIM_PROG)
         {
             break;
         }
