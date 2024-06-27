@@ -23,7 +23,7 @@ char Tabulacao[200];
 void ExecutarAnalisadorLexico() {
     fd = fopen("/Users/kyaracardozo/Compiladores/compiler/expression.txt", "r");
     if (fd == NULL) {
-        printf("Arquivo não encontrado!\n");
+        printf("Opssss! Arquivo não foi encontrado!\n");
         return;
     }
 
@@ -93,7 +93,7 @@ void ExecutarAnalisadorLexico() {
 void ExecutarAnaliseSintatica() {
     fd = fopen("/Users/kyaracardozo/Compiladores/compiler/expression.txt", "r");
     if (fd == NULL) {
-        exibirErro("Arquivo não encontrado!");
+        exibirErro("Opssss! Arquivo não foi encontrado!");
     }
 
     InicializarTabelaId();
@@ -106,7 +106,7 @@ void ExecutarAnaliseSintatica() {
         }
         Aplicacao();
         if (t.cat == FIM_ARQUIVO) {
-            printf("\nLINHA %d: Fim de analise sintatica!!\n\n", ContadorLinha - 1);
+            printf("\nLINHA %d: Vishiii! Analise sintatica chegou ao fim!!\n\n", ContadorLinha - 1);
         } else {
             exibirErro("Erro de sintaxe!");
         }

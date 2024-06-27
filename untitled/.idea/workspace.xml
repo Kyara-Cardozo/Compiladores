@@ -4,27 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dddb2849-9434-4aac-b251-4866c941d1ee" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../DoBlock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DoBlock.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DoBlock.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DoBlock.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compile.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../expression.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/Funcaux.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/Funcaux.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/analex/Analex.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/analex/Analex.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/analex/Deterministic Finite Automata/Analex-AFD.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/analex/Deterministic Finite Automata/afd.jff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/anasynt/Anasynt.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/anasynt/Anasynt.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/anasynt/Anasynt.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/tabelaId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/tabelaId.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-    </list>
+    <list default="true" id="dddb2849-9434-4aac-b251-4866c941d1ee" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -72,7 +52,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1719524381072</updated>
-      <workItem from="1719524382004" duration="2447000" />
+      <workItem from="1719524382004" duration="2855000" />
     </task>
     <servers />
   </component>

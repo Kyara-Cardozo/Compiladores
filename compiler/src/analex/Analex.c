@@ -4,12 +4,14 @@
 #include <ctype.h>
 #include "Analex.h"
 
+// Define os tamanhos máximos para lexemas, strings e números
 #define TAMANHO_LEXEMA 50
 #define TAMANHO_STRING 100
 #define TAMANHO_NUMERO 20
 
+// Função principal de análise léxica
 TOKEN AnaliseLexica(FILE *fd, bool pular_fim_expressao) {
-    static bool primeiraVez = true;
+    static bool primeiraVez = true;  // Variável estática para controlar a primeira chamada
     bool pular = true;
     if (!pular_fim_expressao) pular = false;
 
@@ -32,9 +34,11 @@ TOKEN AnaliseLexica(FILE *fd, bool pular_fim_expressao) {
     }
 }
 
+// Função auxiliar para análise de tokens
 TOKEN AnalexTLA(FILE *fd, bool pular_fim_expressao) {
     int estado;
 
+    // Declaração e inicialização de variáveis auxiliares
     char lexema[TAMANHO_LEXEMA] = "";
     int tamanhoL = 0;
 
@@ -49,9 +53,10 @@ TOKEN AnalexTLA(FILE *fd, bool pular_fim_expressao) {
     estado = 0;
     t.processado = false;
     while (true) {
-        char c = fgetc(fd);
+        char c = fgetc(fd);  // Lê um caractere do arquivo
         switch (estado) {
             case 0:
+                // Transições de estado com base no caractere lido
                 if (c == ' ' || c == '\t')
                     estado = 0;
                 else if (c == '\n' && pular_fim_expressao) {
@@ -238,205 +243,280 @@ TOKEN AnalexTLA(FILE *fd, bool pular_fim_expressao) {
                     lexema[tamanhoL] = c;
                     lexema[++tamanhoL] = '\0';
                 } else {
-    estado = 2;
-    ungetc(c, fd);
-    t.cat = ID;
-    strcpy(t.lexema, lexema);
+                    estado = 2;
+                    ungetc(c, fd);
+                    t.cat = ID;
+                    strcpy(t.lexema, lexema);
 
-    if ((strcmp(t.lexema, "const") == 0) || (strcmp(t.lexema, "char") == 0) || (strcmp(t.lexema, "int") == 0) ||
-        (strcmp(t.lexema, "float") == 0) || (strcmp(t.lexema, "real") == 0) || (strcmp(t.lexema, "bool") == 0) ||
-        (strcmp(t.lexema, "true") == 0) || (strcmp(t.lexema, "false") == 0) || (strcmp(t.lexema, "block") == 0) ||
-        (strcmp(t.lexema, "with") == 0) || (strcmp(t.lexema, "main") == 0) || (strcmp(t.lexema, "do") == 0) ||
-        (strcmp(t.lexema, "while") == 0) || (strcmp(t.lexema, "endblock") == 0) || (strcmp(t.lexema, "varying") == 0) ||
-        (strcmp(t.lexema, "from") == 0) || (strcmp(t.lexema, "to") == 0) || (strcmp(t.lexema, "downto") == 0) ||
-        (strcmp(t.lexema, "for") == 0) || (strcmp(t.lexema, "times") == 0) || (strcmp(t.lexema, "if") == 0) ||
-        (strcmp(t.lexema, "elseif") == 0) || (strcmp(t.lexema, "else") == 0) || (strcmp(t.lexema, "endif") == 0) ||
-        (strcmp(t.lexema, "endwhile") == 0) || (strcmp(t.lexema, "goback") == 0) || (strcmp(t.lexema, "getint") == 0) ||
-        (strcmp(t.lexema, "getreal") == 0) || (strcmp(t.lexema, "getchar") == 0) || (strcmp(t.lexema, "putint") == 0) ||
-        (strcmp(t.lexema, "putreal") == 0) || (strcmp(t.lexema, "putchar") == 0)) {
-        
-        t.cat = PALAVRA_RESERVADA;
+                    // Verifica se o lexema é uma palavra reservada
+                    if ((strcmp(t.lexema, "const") == 0) || (strcmp(t.lexema, "char") == 0) || (strcmp(t.lexema, "int") == 0) ||
+                        (strcmp(t.lexema, "float") == 0) || (strcmp(t.lexema, "break") == 0) || (strcmp(t.lexema, "case") == 0) ||
+                        (strcmp(t.lexema, "continue") == 0) || (strcmp(t.lexema, "default") == 0) || (strcmp(t.lexema, "else") == 0) ||
+                        (strcmp(t.lexema, "for") == 0) || (strcmp(t.lexema, "if") == 0) || (strcmp(t.lexema, "return") == 0) ||
+                        (strcmp(t.lexema, "sizeof") == 0) || (strcmp(t.lexema, "struct") == 0) || (strcmp(t.lexema, "switch") == 0) ||
+                        (strcmp(t.lexema, "void") == 0) || (strcmp(t.lexema, "while") == 0) || (strcmp(t.lexema, "print") == 0) ||
+                        (strcmp(t.lexema, "scan") == 0)) {
+                        t.cat = RESERVADO;
+                    }
+                    return t;
+                }
+                break;
+            case 6:
+                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
+                    estado = 5;
+                    lexema[tamanhoL] = c;
+                    lexema[++tamanhoL] = '\0';
+                } else {
+                    printf("Caractere invalido no ESTADO 6!");
+                    exit(1);
+                }
+                break;
+            case 7:
+                printf("Estado 7 alcancado!");
+                exit(1);
+                break;
+            case 8:
+                if (c == '*') {
+                    estado = 41;
+                } else if (c == '/') {
+                    estado = 40;
+                } else {
+                    estado = 43;
+                    ungetc(c, fd);
+                    t.cat = SIMBOLO;
+                    t.sy_code = DIVISAO;
+                    return t;
+                }
+                break;
+            case 9:
+                printf("Estado 9 alcancado!");
+                exit(1);
+                break;
+            case 10:
+                printf("Estado 10 alcancado!");
+                exit(1);
+                break;
+            case 11:
+                printf("Estado 11 alcancado!");
+                exit(1);
+                break;
+            case 12:
+                printf("Estado 12 alcancado!");
+                exit(1);
+                break;
+            case 13:
+                printf("Estado 13 alcancado!");
+                exit(1);
+                break;
+            case 14:
+                printf("Estado 14 alcancado!");
+                exit(1);
+                break;
+            case 15:
+                printf("Estado 15 alcancado!");
+                exit(1);
+                break;
+            case 16:
+                printf("Estado 16 alcancado!");
+                exit(1);
+                break;
+            case 17:
+                if (c == '=') {
+                    estado = 45;
+                    t.cat = SIMBOLO;
+                    t.sy_code = DIFERENTE;
+                    return t;
+                } else {
+                    estado = 44;
+                    ungetc(c, fd);
+                    t.cat = SIMBOLO;
+                    t.sy_code = NEGACAO;
+                    return t;
+                }
+                break;
+            case 18:
+                if (c == '&') {
+                    estado = 47;
+                    t.cat = SIMBOLO;
+                    t.sy_code = E_LOGICO;
+                    return t;
+                } else {
+                    printf("Caractere invalido no ESTADO 18!");
+                    exit(1);
+                }
+                break;
+            case 20:
+                if (c == '=') {
+                    estado = 48;
+                    t.cat = SIMBOLO;
+                    t.sy_code = MENOR_IGUAL;
+                    return t;
+                } else {
+                    estado = 49;
+                    ungetc(c, fd);
+                    t.cat = SIMBOLO;
+                    t.sy_code = MENOR;
+                    return t;
+                }
+                break;
+            case 22:
+                if (c == '=') {
+                    estado = 48;
+                    t.cat = SIMBOLO;
+                    t.sy_code = MAIOR_IGUAL;
+                    return t;
+                } else {
+                    estado = 49;
+                    ungetc(c, fd);
+                    t.cat = SIMBOLO;
+                    t.sy_code = MAIOR;
+                    return t;
+                }
+                break;
+            case 23:
+                if (c == '=') {
+                    estado = 48;
+                    t.cat = SIMBOLO;
+                    t.sy_code = IGUAL;
+                    return t;
+                } else {
+                    estado = 44;
+                    ungetc(c, fd);
+                    t.cat = SIMBOLO;
+                    t.sy_code = ATRIBUICAO;
+                    return t;
+                }
+                break;
+            case 25:
+                if (c == '|') {
+                    estado = 46;
+                    t.cat = SIMBOLO;
+                    t.sy_code = OU_LOGICO;
+                    return t;
+                } else {
+                    printf("Caractere invalido no ESTADO 25!");
+                    exit(1);
+                }
+                break;
+            case 30:
+                if (isprint(c) != 0) {
+                    estado = 31;
+                    constChar = c;
+                } else {
+                    printf("Caractere invalido no ESTADO 30!");
+                    exit(1);
+                }
+                break;
+            case 31:
+                if (c == '\'') {
+                    estado = 32;
+                    t.cat = CONSTANTE_CHAR;
+                    t.charVal = constChar;
+                    return t;
+                } else {
+                    printf("Caractere invalido no ESTADO 31!");
+                    exit(1);
+                }
+                break;
+            case 32:
+                printf("Estado 32 alcancado!");
+                exit(1);
+                break;
+            case 37:
+                printf("Estado 37 alcancado!");
+                exit(1);
+                break;
+            case 38:
+                printf("Estado 38 alcancado!");
+                exit(1);
+                break;
+            case 40:
+                if (c == '\n') {
+                    estado = 0;
+                    ContadorLinha++;
+                } else if (isprint(c) != 0) {
+                    estado = 40;
+                } else {
+                    printf("Caractere invalido no ESTADO 40!");
+                    exit(1);
+                }
+                break;
+            case 41:
+                if (c == '*') {
+                    estado = 42;
+                } else if (isprint(c) != 0) {
+                    estado = 41;
+                } else if (c == '\n') {
+                    estado = 41;
+                    ContadorLinha++;
+                } else {
+                    printf("Caractere invalido no ESTADO 41!");
+                    exit(1);
+                }
+                break;
+            case 42:
+                if (c == '/') {
+                    estado = 0;
+                } else if (c == '*') {
+                    estado = 42;
+                } else if (isprint(c) != 0) {
+                    estado = 41;
+                } else if (c == '\n') {
+                    estado = 41;
+                    ContadorLinha++;
+                } else {
+                    printf("Caractere invalido no ESTADO 42!");
+                    exit(1);
+                }
+                break;
+            case 43:
+                printf("Estado 43 alcancado!");
+                exit(1);
+                break;
+            case 44:
+                printf("Estado 44 alcancado!");
+                exit(1);
+                break;
+            case 45:
+                printf("Estado 45 alcancado!");
+                exit(1);
+                break;
+            case 46:
+                printf("Estado 46 alcancado!");
+                exit(1);
+                break;
+            case 47:
+                printf("Estado 47 alcancado!");
+                exit(1);
+                break;
+            case 48:
+                printf("Estado 48 alcancado!");
+                exit(1);
+                break;
+            case 49:
+                printf("Estado 49 alcancado!");
+                exit(1);
+                break;
+            case 50:
+                printf("Estado 50 alcancado!");
+                exit(1);
+                break;
+            case 51:
+                printf("Estado 51 alcancado!");
+                exit(1);
+                break;
+            case 52:
+                printf("Estado 52 alcancado!");
+                exit(1);
+                break;
+            case 53:
+                printf("Estado 53 alcancado!");
+                exit(1);
+                break;
+            default:
+                printf("Estado invalido!");
+                exit(1);
+                break;
+        }
     }
-
-    return t;
 }
-
-        break;
-    case 6:
-        if (c == '_') {
-            estado = 6;
-            lexema[tamanhoL] = c;
-            lexema[++tamanhoL] = '\0';
-        } else if (c >= 'a' && c <= 'z') {
-            estado = 5;
-            lexema[tamanhoL] = c;
-            lexema[++tamanhoL] = '\0';
-        } else {
-            printf("Caractere invalido no ESTADO 6!");
-            exit(1);
-        }
-        break;
-    case 25:
-        if (c == '|') {
-            estado = 26;
-            t.cat = SIMBOLO;
-            t.sy_code = OPERADOR_OU;
-            return t;
-        } else {
-            printf("Caractere invalido no ESTADO 25!");
-            exit(1);
-        }
-        break;
-    case 18:
-        if (c == '&') {
-            estado = 24;
-            t.cat = SIMBOLO;
-            t.sy_code = OPERADOR_E;
-            return t;
-        } else {
-            estado = 39;
-            ungetc(c, fd);
-            t.cat = SIMBOLO;
-            t.sy_code = ENDERECO;
-            return t;
-        }
-        break;
-    case 22:
-        if (c == '=') {
-            estado = 43;
-            t.cat = SIMBOLO;
-            t.sy_code = MAIOR_IGUAL;
-            return t;
-        } else {
-            estado = 40;
-            ungetc(c, fd);
-            t.cat = SIMBOLO;
-            t.sy_code = MAIOR_QUE;
-            return t;
-        }
-        break;
-    case 23:
-        if (c == '=') {
-            estado = 45;
-            t.cat = SIMBOLO;
-            t.sy_code = IGUAL;
-            return t;
-        } else {
-            estado = 46;
-            ungetc(c, fd);
-            t.cat = SIMBOLO;
-            t.sy_code = ATRIBUICAO;
-            return t;
-        }
-        break;
-    case 20:
-        if (c == '=') {
-            estado = 44;
-            t.cat = SIMBOLO;
-            t.sy_code = MENOR_IGUAL;
-            return t;
-        } else {
-            estado = 42;
-            ungetc(c, fd);
-            t.cat = SIMBOLO;
-            t.sy_code = MENOR;
-            return t;
-        }
-        break;
-    case 17:
-        if (c == '=') {
-            estado = 21;
-            t.cat = SIMBOLO;
-            t.sy_code = DIFERENTE;
-            return t;
-        } else {
-            estado = 41;
-            ungetc(c, fd);
-            t.cat = SIMBOLO;
-            t.sy_code = OPERADOR_NEGACAO;
-            return t;
-        }
-        break;
-    case 8:
-        if (c == '/') {
-            estado = 27;
-        } else {
-            estado = 19;
-            ungetc(c, fd);
-            t.cat = SIMBOLO;
-            t.sy_code = DIVISAO;
-            return t;
-        }
-        break;
-    case 27:
-        if (c == '\n') {
-            estado = 28;
-            t.cat = COMENTARIO;
-            strcpy(t.comment, string);
-            return t;
-        } else {
-            estado = 27;
-            string[sizeS] = c;
-            string[++sizeS] = '\0';
-        }
-        break;
-    case 30:
-        if (c == '\\') {
-            estado = 31;
-        } else if (isprint(c) != 0 && c != '\'') {
-            estado = 29;
-            constChar = c;
-        } else {
-            printf("Caractere invalido no ESTADO 30!");
-            exit(1);
-        }
-        break;
-    case 29:
-        if (c == '\'') {
-            estado = 47;
-            t.cat = CONSTANTE_CHAR;
-            t.charVal = constChar;
-            return t;
-        } else {
-            printf("Caractere invalido no ESTADO 29!");
-            exit(1);
-        }
-        break;
-    case 31:
-        if (c == 'n') {
-            estado = 32;
-            constChar = '\n';
-        } else if (c == '0') {
-            estado = 33;
-            constChar = '\0';
-        } else {
-            printf("Caractere invalido no ESTADO 31!");
-            exit(1);
-        }
-        break;
-    case 32:
-        if (c == '\'') {
-            estado = 48;
-            t.cat = CONSTANTE_CHAR;
-            t.charVal = constChar;
-            return t;
-        } else {
-            printf("Caractere invalido no ESTADO 32!");
-            exit(1);
-        }
-        break;
-    case 33:
-        if (c == '\'') {
-            estado = 49;
-            t.cat = CONSTANTE_CHAR;
-            t.charVal = constChar;
-            return t;
-        } else {
-            printf("Caractere invalido no ESTADO 33!");
-            exit(1);
-        }
-        break;
-    }
-  }
-}
-
