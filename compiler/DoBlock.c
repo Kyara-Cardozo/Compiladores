@@ -21,7 +21,7 @@ bool bExibirArvore;
 char Tabulacao[200];
 
 void ExecutarAnalisadorLexico() {
-    fd = fopen("/Users/kyaracardozo/Downloads/AureAdeCompilador 1-1 (2)/compiler/expression.txt", "r");
+    fd = fopen("/Users/kyaracardozo/Compiladores/compiler/expression.txt", "r");
     if (fd == NULL) {
         printf("Arquivo não encontrado!\n");
         return;
@@ -91,7 +91,7 @@ void ExecutarAnalisadorLexico() {
 }
 
 void ExecutarAnaliseSintatica() {
-    fd = fopen("/Users/kyaracardozo/Downloads/AureAdeCompilador 1-1 (2)/compiler/expression.txt", "r");
+    fd = fopen("/Users/kyaracardozo/Compiladores/compiler/expression.txt", "r");
     if (fd == NULL) {
         exibirErro("Arquivo não encontrado!");
     }
