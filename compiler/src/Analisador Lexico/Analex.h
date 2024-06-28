@@ -1,43 +1,125 @@
-#ifndef _ANALEX_ // Verifica se _ANALEX_ não foi definido anteriormente para evitar redefinições.
-#define _ANALEX_ // Define _ANALEX_ para indicar que o cabeçalho foi incluído.
+#include <stdio.h>
 
-#include <stdio.h> // Inclui a biblioteca padrão de entrada e saída.
-#include <stdbool.h> // Inclui a biblioteca padrão para o uso do tipo booleano.
+// Protege a inclusão múltipla do cabeçalho
+#ifndef ANALEX_H
+#define ANALEX_H
 
-#define LEXEME_MAX_SIZE 31 // Define o tamanho máximo de um lexema.
-#define STRING_MAX_SIZE 100 // Define o tamanho máximo de uma string.
-#define COMMENT_MAX_SIZE 300 // Define o tamanho máximo de um comentário.
+// Define o tamanho máximo do lexema
+#define TAM_MAX_LEXEMA 31
 
-enum TOKEN_CAT {ID=0, PALAVRA_RESERVADA, SIMBOLO, ID_CONST, CONSTANTE_INT, CONSTANTE_REAL, CONSTANTE_CHAR, CONSTANTE_STRING, CONST_BOOL, COMENTARIO, FIM_EXPRESSAO, FIM_ARQUIVO};
-// Define uma enumeração para as categorias de tokens.
+// Define os diferentes tipos de categorias de tokens
+enum TOKEN_CAT
+{
+    ID = 1,      // Identificador
+    PAL_RESERV,  // Palavra reservada
+    SINAL,       // Sinal
+    CONST_CHAR,  // Constante de caractere
+    CONST_FLOAT, // Constante de ponto flutuante
+    CONST_INT,   // Constante inteira
+    ID_CONST,    // Identificador de constante
+    LITERAL,     // Literal
+    OP_ARIT,     // Operador aritmético
+    OP_LOGIC,    // Operador lógico
+    OP_RELAC,    // Operador relacional
+    FIM_EXPR,    // Fim da expressão
+    FIM_ARQ      // Fim do arquivo
+};
 
-enum SYMBOLS {ATRIBUICAO=0, ADICAO, SUBTRACAO, MULTIPLICACAO, DIVISAO, SINAL_POSITIVO, SINAL_NEGATIVO, ENDERECO,
-                IGUAL, MAIOR_QUE, MENOR, MAIOR_IGUAL, MENOR_IGUAL, DIFERENTE, 
-                OPERADOR_E, OPERADOR_OU, OPERADOR_NEGACAO, ABRE_PARENTESE, FECHA_PARENTESE, ABRE_COLCHETE, 
-                FECHA_COLCHETE, ABRE_CHAVE, FECHA_CHAVE, VIRGULA,
-                PERIOD, DOIS_PONTOS, PONTO_VIRGULA};
-// Define uma enumeração para os símbolos.
+// Define os diferentes tipos de palavras reservadas
+enum PAL_RESERV
+{
+    MAIN = 1,
+    PUTCHAR,
+    GETREAL,
+    ENDBLOCK,
+    IF,
+    CONST,
+    VARYING,
+    GOBACK,
+    BLOCK,
+    GETCHAR,
+    CHAR,
+    TO,
+    FOR,
+    ELSE,
+    DOWNTO,
+    PUTREAL,
+    ELSEIF,
+    ENDIF,
+    GETINT,
+    PUTINT,
+    REAL,
+    DO,
+    ENDWHILE,
+    WITH,
+    FROM,
+    BOOL,
+    WHILE,
+    INT
+};
 
-typedef struct {
-    enum TOKEN_CAT cat; // Categoria do token.
-    bool processado; // Indica se o token foi processado.
-    union {
-        int sy_code; // Código do operador.
-        char lexema[LEXEME_MAX_SIZE]; // Lexema para ID ou PALAVRA_RESERVADA.
-        int intVal; // Valor inteiro para CONSTANTE_INT.
-        float realVal; // Valor real para CONSTANTE_REAL.
-        char charVal; // Valor de caractere para CONSTANTE_CHAR.
-        char string[STRING_MAX_SIZE]; // String para CONSTANTE_STRING.
-        char comment[COMMENT_MAX_SIZE]; // Comentário para COMENTARIO.
+// Define os diferentes tipos de sinais
+enum SINAIS
+{
+    ABREPAR = 1,   // (
+    ABRECOL,       // [
+    ABRECHAVE,     // {
+    REFERENCIA,    // &
+    VIRGULA,       // ,
+    FECHAPAR,      // )
+    FECHACOL,      // ]
+    FECHACHAVE     // }
+};
+
+// Define os diferentes tipos de operadores aritméticos
+enum OP_ARIT
+{
+    ATRIBUICAO = 1, // =
+    ADICAO,         // +
+    SUBTRACAO,      // -
+    MULTIPLICACAO,  // *
+    DIVISAO         // /
+};
+
+// Define os diferentes tipos de operadores relacionais
+enum OP_RELAC
+{
+    IGUALDADE = 1, // ==
+    DIFERENTE,     // !=
+    MENOR_IGUAL,   // <=
+    MAIOR_IGUAL,   // >=
+    MENOR,         // <
+    MAIOR          // >
+};
+
+// Define os diferentes tipos de operadores lógicos
+enum OP_LOGIC
+{
+    AND_LOGIC = 1, // &&
+    OR_LOGIC,      // ||
+    NOT_LOGIC      // !
+};
+
+// Define a estrutura do token
+typedef struct
+{
+    enum TOKEN_CAT cat; // Categoria do token
+    union
+    {
+        int codigo;                  // Código do token
+        int indice;                  // Índice do token
+        char lexema[TAM_MAX_LEXEMA]; // Lexema do token
+        int valInt;                  // Valor inteiro do token
+        float valFloat;              // Valor de ponto flutuante do token
+        char caractere;              // Caractere do token
     };
-} TOKEN; // Define a estrutura de um token.
+} TOKEN;
 
-extern int ContadorLinha; // Contador de linhas do arquivo.
-extern TOKEN t; // Token atual.
-extern TOKEN tkLA; // Lookahead token.
-extern FILE *fd; // Ponteiro para o arquivo de entrada.
+// Declaração de variáveis externas
+extern TOKEN tk;
+extern FILE *fd;
 
-TOKEN AnalexTLA(FILE *fd, bool pular_fim_expressao); // Função que realiza análise léxica com lookahead.
-TOKEN AnaliseLexica(FILE *fd, bool pular_fim_expressao); // Função que realiza análise léxica.
+// Declaração da função de análise léxica
+TOKEN AnaLex(FILE *);
 
-#endif // _ANALEX_ // Finaliza a inclusão condicional.
+#endif

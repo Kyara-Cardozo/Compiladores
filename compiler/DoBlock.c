@@ -1,131 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include <ctype.h>
-#include "src/Analisador Lexico/Analex.c"
-#include "src/Analisador Lexico/Analex.h"
-#include "src/Analisador Sintatico/Anasynt.h"
-#include "src/Analisador Sintatico/Anasynt.c"
-#include "src/Funcaux.h"
-#include "src/Funcaux.c"
-#include "src/tabelaId.h"
-#include "src/tabelaId.c"
+#include <string.h>
+#include "compiler/src/Analisador Lexico/Analex.c"
+#include "compiler/src/Funcao.c"
+#include "compiler/src/Analisador Sintatico/AnaSint.h"
+#include "compiler/src/Funcao.h"
+#include "compiler/Processandotokens.c"
 
 FILE *fd;
-TOKEN t;
-TOKEN tkLA;
-TABELA_ID tabelaId;
-int ContadorLinha;
-bool bExibirArvore;
-char Tabulacao[200];
+TOKEN tk;
 
-void ExecutarAnalisadorLexico() {
-    fd = fopen("/Users/kyaracardozo/Compiladores/compiler/expression.txt", "r");
-    if (fd == NULL) {
-        printf("Opssss! Arquivo não foi encontrado!\n");
-        return;
-    }
+char TABS[200] = "";
 
-    printf("LINHA %d: ", ContadorLinha);
-    while (true) {
-        t = AnaliseLexica(fd, false);
-        switch (t.cat) {
-            case ID:
-                printf("<ID, %s> ", t.lexema);
-                break;
-            case PALAVRA_RESERVADA:
-                printf("<PALAVRA_RESERVADA, %s> ", t.lexema);
-                break;
-            case SIMBOLO:
-                switch (t.sy_code) {
-                    case ATRIBUICAO: printf("<SIMBOLO, ATRIBUICAO> "); break;
-                    case ADICAO: printf("<SIMBOLO, ADICAO> "); break;
-                    case SUBTRACAO: printf("<SIMBOLO, SUBTRACAO> "); break;
-                    case MULTIPLICACAO: printf("<SIMBOLO, MULTIPLICACAO> "); break;
-                    case DIVISAO: printf("<SIMBOLO, DIVISAO> "); break;
-                    case ENDERECO: printf("<SIMBOLO, ENDERECO> "); break;
-                    case IGUAL: printf("<SIMBOLO, IGUAL> "); break;
-                    case MAIOR_QUE: printf("<SIMBOLO, MAIOR_QUE> "); break;
-                    case MENOR: printf("<SIMBOLO, MENOR> "); break;
-                    case MAIOR_IGUAL: printf("<SIMBOLO, MAIOR_IGUAL> "); break;
-                    case MENOR_IGUAL: printf("<SIMBOLO, MENOR_IGUAL> "); break;
-                    case DIFERENTE: printf("<SIMBOLO, DIFERENTE> "); break;
-                    case OPERADOR_E: printf("<SIMBOLO, OPERADOR_E> "); break;
-                    case OPERADOR_OU: printf("<SIMBOLO, OPERADOR_OU> "); break;
-                    case OPERADOR_NEGACAO: printf("<SIMBOLO, OPERADOR_NEGACAO> "); break;
-                    case ABRE_PARENTESE: printf("<SIMBOLO, ABRE_PARENTESE> "); break;
-                    case FECHA_PARENTESE: printf("<SIMBOLO, FECHA_PARENTESE> "); break;
-                    case ABRE_COLCHETE: printf("<SIMBOLO, ABRE_COLCHETE> "); break;
-                    case FECHA_COLCHETE: printf("<SIMBOLO, FECHA_COLCHETE> "); break;
-                    case ABRE_CHAVE: printf("<SIMBOLO, ABRE_CHAVE> "); break;
-                    case FECHA_CHAVE: printf("<SIMBOLO, FECHA_CHAVE> "); break;
-                }
-                break;
-            case CONSTANTE_INT:
-                printf("<CONSTANTE_INT, %d> ", t.intVal);
-                break;
-            case CONSTANTE_REAL:
-                printf("<CONSTANTE_REAL, %f> ", t.realVal);
-                break;
-            case CONSTANTE_CHAR:
-                printf("<CONSTANTE_CHAR, %c> ", t.charVal);
-                break;
-            case CONSTANTE_STRING:
-                printf("<CONSTANTE_STRING, %s> ", t.string);
-                break;
-            case COMENTARIO:
-                printf("<COMENTARIO, %s> ", t.comment);
-                break;
-            case FIM_EXPRESSAO:
-                printf("<FIM_EXPRESSAO, %d>\n", 0);
-                printf("LINHA %d: ", ContadorLinha);
-                break;
-            case FIM_ARQUIVO:
-                printf(" <FIM DO ARQUIVO>\n");
-                break;
-        }
-        if (t.cat == FIM_ARQUIVO) break;
-    }
-    fclose(fd);
+void Analisador_lexico(FILE *fd)
+{
+    printf("\n[========== INICIO - Analise lexica ==========]\n");
+    processador_tokens(fd);
+    printf("\n[========== FIM - Analise lexica ==========]\n");
 }
 
-void ExecutarAnaliseSintatica() {
-    fd = fopen("/Users/kyaracardozo/Compiladores/compiler/expression.txt", "r");
-    if (fd == NULL) {
-        exibirErro("Opssss! Arquivo não foi encontrado!");
-    }
-
-    InicializarTabelaId();
-
-    while (true) {
-        t = AnaliseLexica(fd, true);
-        if (t.cat == FIM_ARQUIVO) {
-            printf("\nFim do arquivo!\n");
-            break;
-        }
-        Aplicacao();
-        if (t.cat == FIM_ARQUIVO) {
-            printf("\nLINHA %d: Vishiii! Analise sintatica chegou ao fim!!\n\n", ContadorLinha - 1);
-        } else {
-            exibirErro("Erro de sintaxe!");
-        }
-    }
-    fclose(fd);
+void Analisador_sintatico()
+{
+    // Iniciar_tabela();
+    printf("\n[========== INICIO - Analise sintatica ==========]\n");
+    prog();
+    printf("\n[========== FIM - Analise sintatica ==========]\n");
 }
 
-int main(int argc, char **argv) {
-    ContadorLinha = 1;
-    if (argc < 2) {
-        exibirErro("Nenhum argumento passado!\n\t Use  'lexico' ou 'sintatico'!");
-    } else if (strcmp(argv[1], "lexico") == 0) {
-        printf("\n\n[Analise Lexica---------------]\n");
-        ExecutarAnalisadorLexico();
-    } else if (strcmp(argv[1], "sintatico") == 0) {
-        bExibirArvore = false;
-        printf("\n\n[Analise Sintatica-------------]\n");
-        ExecutarAnaliseSintatica();
-    } else {
-        exibirErro("Argumento invalido!\n\t Use 'lexico' ou 'sintatico'!");
+int main()
+{
+
+    fd = fopen("teste.dbk", "r");
+
+    if (fd == NULL)
+    {
+        fprintf(stderr, "\nError ao abrir o arquivo.\n");
+        return 1;
     }
+
+    // Analisador_lexico(fd);
+    Analisador_sintatico();
+
+    fclose(fd);
+
+    return 0;
 }

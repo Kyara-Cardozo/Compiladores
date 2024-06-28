@@ -1,522 +1,632 @@
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
-#include "Analex.h"
+#include <string.h>
+#include "AnaLex.h"
+#include "compiler/src/Funcao.h"
 
-// Define os tamanhos máximos para lexemas, strings e números
-#define TAMANHO_LEXEMA 50
-#define TAMANHO_STRING 100
-#define TAMANHO_NUMERO 20
+// Define os tamanhos máximos para os lexemas, literais e números
+#define TAM_LEXEMA 50
+#define TAM_LITERAL 50
+#define TAM_NUM 20
 
-// Função principal de análise léxica
-TOKEN AnaliseLexica(FILE *fd, bool pular_fim_expressao) {
-    static bool primeiraVez = true;  // Variável estática para controlar a primeira chamada
-    bool pular = true;
-    if (!pular_fim_expressao) pular = false;
+// Variáveis globais
+int indiceLiteral = 0;
+char tableLit[TAM_LITERAL][TAM_LEXEMA] = {""}; // Tabela de literais
+int lti = 0; // Índice da tabela de literais
+int contaLinha = 1; // Contador de linhas
 
-    TOKEN tk;
+// Função de análise léxica
+TOKEN AnaLex(FILE *fd)
+{
+    int estado = 0; // Estado inicial do autômato
+    int tamL = 0; // Tamanho do lexema
+    int tamD = 0; // Tamanho do dígito
+    char lexema[TAM_LEXEMA] = ""; // Buffer para o lexema
+    char digitos[TAM_NUM] = ""; // Buffer para os dígitos
 
-    if (primeiraVez) {
-        primeiraVez = false;
-        tk = AnalexTLA(fd, pular);
-        if (tk.cat == FIM_ARQUIVO)
-            tkLA = tk;
-        else
-            tkLA = AnalexTLA(fd, pular);
-        return tk;
-    } else if (tkLA.cat == FIM_ARQUIVO) {
-        return (tkLA);
-    } else {
-        tk = tkLA;
-        tkLA = AnalexTLA(fd, pular);
-        return tk;
-    }
-}
+    char c; // Caractere lido do arquivo
 
-// Função auxiliar para análise de tokens
-TOKEN AnalexTLA(FILE *fd, bool pular_fim_expressao) {
-    int estado;
+    TOKEN token; // Token a ser retornado
 
-    // Declaração e inicialização de variáveis auxiliares
-    char lexema[TAMANHO_LEXEMA] = "";
-    int tamanhoL = 0;
+    while (1)
+    {
+        c = fgetc(fd);
 
-    char digits[TAMANHO_NUMERO] = "";
-    int tamanhoD = 0;
+        switch (estado)
+        {
+        case 0:
+            if (c == ' ' || c == '\t')
+            {
+                estado = 0;
+            }
+            else if (c == '\'')
+            {
+                estado = 9;
+                lexema[tamL++] = c;
 
-    char string[TAMANHO_STRING] = "";
-    int sizeS = 0;
+                lexema[tamL] = '\0';
+            }
+            else if (c == '\"')
+            {
+                estado = 15;
+            }
+            else if (c == '/')
+            {
+                estado = 18;
+            }
+            else if (c == '=')
+            {
+                estado = 21;
+            }
+            else if ((c == '_') || isalpha(c))
+            {
+                estado = 1;
+                lexema[tamL++] = c;
+                lexema[tamL] = '\0';
+            }
+            else if (isdigit(c))
+            {
+                estado = 4;
+                digitos[tamD++] = c;
+                digitos[tamD] = '\0';
+            }
+            else if (c == '+')
+            {
+                estado = 35;
+                token.cat = OP_ARIT;
+                token.codigo = ADICAO;
+                return token;
+            }
+            else if (c == '-')
+            {
+                estado = 36;
+                token.cat = OP_ARIT;
+                token.codigo = SUBTRACAO;
+                return token;
+            }
+            else if (c == '*')
+            {
+                estado = 37;
+                token.cat = OP_ARIT;
+                token.codigo = MULTIPLICACAO;
+                return token;
+            }
+            else if (c == '!')
+            {
+                estado = 24;
+                token.cat = OP_RELAC;
+            }
+            else if (c == '|')
+            {
+                estado = 42;
+                token.cat = OP_LOGIC;
+            }
+            else if (c == '&')
+            {
+                estado = 39;
+            }
+            else if (c == '>')
+            {
+                estado = 30;
+                token.cat = OP_RELAC;
+            }
+            else if (c == '<')
+            {
+                estado = 27;
+                token.cat = OP_RELAC;
+            }
+            else if (c == '{')
+            {
+                estado = 33;
+                token.cat = SINAL;
+                token.codigo = ABRECHAVE;
+                return token;
+            }
+            else if (c == '}')
+            {
+                estado = 34;
+                token.cat = SINAL;
+                token.codigo = FECHACHAVE;
+                return token;
+            }
+            else if (c == '(')
+            {
+                estado = 44;
+                token.cat = SINAL;
+                token.codigo = ABREPAR;
+                return token;
+            }
+            else if (c == ')')
+            {
+                estado = 45;
+                token.cat = SINAL;
+                token.codigo = FECHAPAR;
+                return token;
+            }
+            else if (c == ',')
+            {
+                estado = 52;
+                token.cat = SINAL;
+                token.codigo = VIRGULA;
+                return token;
+            }
+            else if (c == '[')
+            {
+                estado = 46;
+                token.cat = SINAL;
+                token.codigo = ABRECOL;
+                return token;
+            }
+            else if (c == ']')
+            {
+                estado = 47;
+                token.cat = SINAL;
+                token.codigo = FECHACOL;
+                return token;
+            }
+            else if (c == '\n')
+            {
+                contaLinha++;
+                estado = 0;
+            }
+            else if (c == EOF)
+            {
+                token.cat = FIM_ARQ;
+                contaLinha = 1;
+                return token;
+            }
+            else
+            {
+                errorLex(contaLinha, c);
+            }
+            break;
+        case 1:
+            if (c == '_' || isalpha(c) || isdigit(c))
+            {
+                estado = 1;
+                lexema[tamL++] = c;
+                lexema[tamL] = '\0';
+            }
+            else
+            {
+                estado = 3;
 
-    char constChar;
+                ungetc(c, fd);
 
-    estado = 0;
-    t.processado = false;
-    while (true) {
-        char c = fgetc(fd);  // Lê um caractere do arquivo
-        switch (estado) {
-            case 0:
-                // Transições de estado com base no caractere lido
-                if (c == ' ' || c == '\t')
-                    estado = 0;
-                else if (c == '\n' && pular_fim_expressao) {
-                    estado = 0;
-                    ContadorLinha++;
-                } else if (c == '\"') {
-                    estado = 34;
-                } else if (c >= '0' && c <= '9') {
-                    estado = 1;
-                    digits[tamanhoD] = c;
-                    digits[++tamanhoD] = '\0';
-                } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-                    estado = 5;
-                    lexema[tamanhoL] = c;
-                    lexema[++tamanhoL] = '\0';
-                } else if (c == '_') {
-                    estado = 6;
-                    lexema[tamanhoL] = c;
-                    lexema[++tamanhoL] = '\0';
-                } else if (c == '|') {
-                    estado = 25;
-                } else if (c == '&') {
-                    estado = 18;
-                } else if (c == '>') {
-                    estado = 22;
-                } else if (c == '=') {
-                    estado = 23;
-                } else if (c == '<') {
-                    estado = 20;
-                } else if (c == '!') {
-                    estado = 17;
-                } else if (c == '/') {
-                    estado = 8;
-                } else if (c == '*') {
-                    estado = 7;
-                    t.cat = SIMBOLO;
-                    t.sy_code = MULTIPLICACAO;
-                    return t;
-                } else if (c == '+') {
-                    estado = 9;
-                    t.cat = SIMBOLO;
-                    t.sy_code = ADICAO;
-                    return t;
-                } else if (c == '-') {
-                    estado = 10;
-                    t.cat = SIMBOLO;
-                    t.sy_code = SUBTRACAO;
-                    return t;
-                } else if (c == '(') {
-                    estado = 11;
-                    t.cat = SIMBOLO;
-                    t.sy_code = ABRE_PARENTESE;
-                    return t;
-                } else if (c == ')') {
-                    estado = 12;
-                    t.cat = SIMBOLO;
-                    t.sy_code = FECHA_PARENTESE;
-                    return t;
-                } else if (c == '[') {
-                    estado = 13;
-                    t.cat = SIMBOLO;
-                    t.sy_code = ABRE_COLCHETE;
-                    return t;
-                } else if (c == ']') {
-                    estado = 14;
-                    t.cat = SIMBOLO;
-                    t.sy_code = FECHA_COLCHETE;
-                    return t;
-                } else if (c == '{') {
-                    estado = 15;
-                    t.cat = SIMBOLO;
-                    t.sy_code = ABRE_CHAVE;
-                    return t;
-                } else if (c == '}') {
-                    estado = 16;
-                    t.cat = SIMBOLO;
-                    t.sy_code = FECHA_CHAVE;
-                    return t;
-                } else if (c == '\'') {
-                    estado = 30;
-                } else if (c == ',') {
-                    estado = 50;
-                    t.cat = SIMBOLO;
-                    t.sy_code = VIRGULA;
-                    return t;
-                } else if (c == '.') {
-                    estado = 51;
-                    t.cat = SIMBOLO;
-                    t.sy_code = PERIOD;
-                    return t;
-                } else if (c == ':') {
-                    estado = 52;
-                    t.cat = SIMBOLO;
-                    t.sy_code = DOIS_PONTOS;
-                    return t;
-                } else if (c == ';') {
-                    estado = 53;
-                    t.cat = SIMBOLO;
-                    t.sy_code = PONTO_VIRGULA;
-                    return t;
-                } else if (c == '\n') {
-                    estado = 0;
-                    t.cat = FIM_EXPRESSAO;
-                    ContadorLinha++;
-                    return t;
-                } else if (c == EOF) {
-                    t.cat = FIM_ARQUIVO;
-                    return t;
-                } else {
-                    printf("Caractere invalido no ESTADO 0!");
-                    exit(1);
-                }
-                break;
-            case 34:
-                if (isprint(c) != 0) {
-                    estado = 35;
-                    string[sizeS] = c;
-                    string[++sizeS] = '\0';
-                } else {
-                    printf("Caractere invalido no ESTADO 34!");
-                    exit(1);
-                }
-                break;
-            case 35:
-                if (isprint(c) != 0 && c != '\n' && c != '\"') {
-                    estado = 35;
-                    string[sizeS] = c;
-                    string[++sizeS] = '\0';
-                } else if (c == '\n') {
-                    estado = 35;
-                } else if (c == '\"') {
-                    estado = 36;
-                    t.cat = CONSTANTE_STRING;
-                    strcpy(t.string, string);
-                    return t;
-                } else {
-                    printf("Caractere invalido no ESTADO 35!");
-                    exit(1);
-                }
-                break;
-            case 1:
-                if (c == '.') {
-                    estado = 3;
-                    digits[tamanhoD] = c;
-                    digits[++tamanhoD] = '\0';
-                } else if (c >= '0' && c <= '9') {
-                    estado = 1;
-                    digits[tamanhoD] = c;
-                    digits[++tamanhoD] = '\0';
-                } else {
-                    estado = 38;
-                    ungetc(c, fd);
-                    t.cat = CONSTANTE_INT;
-                    t.intVal = atoi(digits);
-                    return t;
-                }
-                break;
-            case 3:
-                if (c >= '0' && c <= '9') {
-                    estado = 4;
-                    digits[tamanhoD] = c;
-                    digits[++tamanhoD] = '\0';
-                } else {
-                    printf("Caractere invalido no ESTADO 3!");
-                    exit(1);
-                }
-                break;
-            case 4:
-                if (c >= '0' && c <= '9') {
-                    estado = 4;
-                    digits[tamanhoD] = c;
-                    digits[++tamanhoD] = '\0';
-                } else {
-                    estado = 37;
-                    ungetc(c, fd);
-                    t.cat = CONSTANTE_REAL;
-                    t.realVal = atof(digits);
-                    return t;
-                }
-                break;
-            case 5:
-                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
-                    estado = 5;
-                    lexema[tamanhoL] = c;
-                    lexema[++tamanhoL] = '\0';
-                } else {
-                    estado = 2;
-                    ungetc(c, fd);
-                    t.cat = ID;
-                    strcpy(t.lexema, lexema);
+                strcpy(token.lexema, lexema);
 
-                    // Verifica se o lexema é uma palavra reservada
-                    if ((strcmp(t.lexema, "const") == 0) || (strcmp(t.lexema, "char") == 0) || (strcmp(t.lexema, "int") == 0) ||
-                        (strcmp(t.lexema, "float") == 0) || (strcmp(t.lexema, "break") == 0) || (strcmp(t.lexema, "case") == 0) ||
-                        (strcmp(t.lexema, "continue") == 0) || (strcmp(t.lexema, "default") == 0) || (strcmp(t.lexema, "else") == 0) ||
-                        (strcmp(t.lexema, "for") == 0) || (strcmp(t.lexema, "if") == 0) || (strcmp(t.lexema, "return") == 0) ||
-                        (strcmp(t.lexema, "sizeof") == 0) || (strcmp(t.lexema, "struct") == 0) || (strcmp(t.lexema, "switch") == 0) ||
-                        (strcmp(t.lexema, "void") == 0) || (strcmp(t.lexema, "while") == 0) || (strcmp(t.lexema, "print") == 0) ||
-                        (strcmp(t.lexema, "scan") == 0)) {
-                        t.cat = RESERVADO;
-                    }
-                    return t;
+                if (strcmp("main", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = MAIN;
                 }
-                break;
-            case 6:
-                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
-                    estado = 5;
-                    lexema[tamanhoL] = c;
-                    lexema[++tamanhoL] = '\0';
-                } else {
-                    printf("Caractere invalido no ESTADO 6!");
-                    exit(1);
+                else if (strcmp("block", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = BLOCK;
                 }
-                break;
-            case 7:
-                printf("Estado 7 alcancado!");
-                exit(1);
-                break;
-            case 8:
-                if (c == '*') {
-                    estado = 41;
-                } else if (c == '/') {
-                    estado = 40;
-                } else {
-                    estado = 43;
-                    ungetc(c, fd);
-                    t.cat = SIMBOLO;
-                    t.sy_code = DIVISAO;
-                    return t;
+                else if (strcmp("endblock", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = ENDBLOCK;
                 }
-                break;
-            case 9:
-                printf("Estado 9 alcancado!");
-                exit(1);
-                break;
-            case 10:
-                printf("Estado 10 alcancado!");
-                exit(1);
-                break;
-            case 11:
-                printf("Estado 11 alcancado!");
-                exit(1);
-                break;
-            case 12:
-                printf("Estado 12 alcancado!");
-                exit(1);
-                break;
-            case 13:
-                printf("Estado 13 alcancado!");
-                exit(1);
-                break;
-            case 14:
-                printf("Estado 14 alcancado!");
-                exit(1);
-                break;
-            case 15:
-                printf("Estado 15 alcancado!");
-                exit(1);
-                break;
-            case 16:
-                printf("Estado 16 alcancado!");
-                exit(1);
-                break;
-            case 17:
-                if (c == '=') {
-                    estado = 45;
-                    t.cat = SIMBOLO;
-                    t.sy_code = DIFERENTE;
-                    return t;
-                } else {
-                    estado = 44;
-                    ungetc(c, fd);
-                    t.cat = SIMBOLO;
-                    t.sy_code = NEGACAO;
-                    return t;
+                else if (strcmp("const", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = CONST;
                 }
-                break;
-            case 18:
-                if (c == '&') {
-                    estado = 47;
-                    t.cat = SIMBOLO;
-                    t.sy_code = E_LOGICO;
-                    return t;
-                } else {
-                    printf("Caractere invalido no ESTADO 18!");
-                    exit(1);
+                else if (strcmp("char", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = CHAR;
                 }
-                break;
-            case 20:
-                if (c == '=') {
-                    estado = 48;
-                    t.cat = SIMBOLO;
-                    t.sy_code = MENOR_IGUAL;
-                    return t;
-                } else {
-                    estado = 49;
-                    ungetc(c, fd);
-                    t.cat = SIMBOLO;
-                    t.sy_code = MENOR;
-                    return t;
+                else if (strcmp("int", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = INT;
                 }
-                break;
-            case 22:
-                if (c == '=') {
-                    estado = 48;
-                    t.cat = SIMBOLO;
-                    t.sy_code = MAIOR_IGUAL;
-                    return t;
-                } else {
-                    estado = 49;
-                    ungetc(c, fd);
-                    t.cat = SIMBOLO;
-                    t.sy_code = MAIOR;
-                    return t;
+                else if (strcmp("real", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = REAL;
                 }
-                break;
-            case 23:
-                if (c == '=') {
-                    estado = 48;
-                    t.cat = SIMBOLO;
-                    t.sy_code = IGUAL;
-                    return t;
-                } else {
-                    estado = 44;
-                    ungetc(c, fd);
-                    t.cat = SIMBOLO;
-                    t.sy_code = ATRIBUICAO;
-                    return t;
+                else if (strcmp("bool", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = BOOL;
                 }
-                break;
-            case 25:
-                if (c == '|') {
-                    estado = 46;
-                    t.cat = SIMBOLO;
-                    t.sy_code = OU_LOGICO;
-                    return t;
-                } else {
-                    printf("Caractere invalido no ESTADO 25!");
-                    exit(1);
+                else if (strcmp("with", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = WITH;
                 }
-                break;
-            case 30:
-                if (isprint(c) != 0) {
-                    estado = 31;
-                    constChar = c;
-                } else {
-                    printf("Caractere invalido no ESTADO 30!");
-                    exit(1);
+                else if (strcmp("do", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = DO;
                 }
-                break;
-            case 31:
-                if (c == '\'') {
-                    estado = 32;
-                    t.cat = CONSTANTE_CHAR;
-                    t.charVal = constChar;
-                    return t;
-                } else {
-                    printf("Caractere invalido no ESTADO 31!");
-                    exit(1);
+                else if (strcmp("varying", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = VARYING;
                 }
-                break;
-            case 32:
-                printf("Estado 32 alcancado!");
-                exit(1);
-                break;
-            case 37:
-                printf("Estado 37 alcancado!");
-                exit(1);
-                break;
-            case 38:
-                printf("Estado 38 alcancado!");
-                exit(1);
-                break;
-            case 40:
-                if (c == '\n') {
-                    estado = 0;
-                    ContadorLinha++;
-                } else if (isprint(c) != 0) {
-                    estado = 40;
-                } else {
-                    printf("Caractere invalido no ESTADO 40!");
-                    exit(1);
+                else if (strcmp("from", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = FROM;
                 }
-                break;
-            case 41:
-                if (c == '*') {
-                    estado = 42;
-                } else if (isprint(c) != 0) {
-                    estado = 41;
-                } else if (c == '\n') {
-                    estado = 41;
-                    ContadorLinha++;
-                } else {
-                    printf("Caractere invalido no ESTADO 41!");
-                    exit(1);
+                else if (strcmp("to", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = TO;
                 }
-                break;
-            case 42:
-                if (c == '/') {
-                    estado = 0;
-                } else if (c == '*') {
-                    estado = 42;
-                } else if (isprint(c) != 0) {
-                    estado = 41;
-                } else if (c == '\n') {
-                    estado = 41;
-                    ContadorLinha++;
-                } else {
-                    printf("Caractere invalido no ESTADO 42!");
-                    exit(1);
+                else if (strcmp("downto", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = DOWNTO;
                 }
-                break;
-            case 43:
-                printf("Estado 43 alcancado!");
-                exit(1);
-                break;
-            case 44:
-                printf("Estado 44 alcancado!");
-                exit(1);
-                break;
-            case 45:
-                printf("Estado 45 alcancado!");
-                exit(1);
-                break;
-            case 46:
-                printf("Estado 46 alcancado!");
-                exit(1);
-                break;
-            case 47:
-                printf("Estado 47 alcancado!");
-                exit(1);
-                break;
-            case 48:
-                printf("Estado 48 alcancado!");
-                exit(1);
-                break;
-            case 49:
-                printf("Estado 49 alcancado!");
-                exit(1);
-                break;
-            case 50:
-                printf("Estado 50 alcancado!");
-                exit(1);
-                break;
-            case 51:
-                printf("Estado 51 alcancado!");
-                exit(1);
-                break;
-            case 52:
-                printf("Estado 52 alcancado!");
-                exit(1);
-                break;
-            case 53:
-                printf("Estado 53 alcancado!");
-                exit(1);
-                break;
-            default:
-                printf("Estado invalido!");
-                exit(1);
-                break;
+                else if (strcmp("while", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = WHILE;
+                }
+                else if (strcmp("endwhile", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = ENDWHILE;
+                }
+                else if (strcmp("for", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = FOR;
+                }
+                else if (strcmp("if", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = IF;
+                }
+                else if (strcmp("elseif", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = ELSEIF;
+                }
+                else if (strcmp("else", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = ELSE;
+                }
+                else if (strcmp("endif", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = ENDIF;
+                }
+                else if (strcmp("goback", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = GOBACK;
+                }
+                else if (strcmp("getint", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = GETINT;
+                }
+                else if (strcmp("getreal", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = GETREAL;
+                }
+                else if (strcmp("getchar", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = GETCHAR;
+                }
+                else if (strcmp("putint", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = PUTINT;
+                }
+                else if (strcmp("putreal", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = PUTREAL;
+                }
+                else if (strcmp("putchar", lexema) == 0)
+                {
+                    token.cat = PAL_RESERV;
+                    token.codigo = PUTCHAR;
+                }
+                else
+                {
+                    token.cat = ID;
+                    strcpy(token.lexema, lexema);
+                }
+
+                return token;
+            }
+            break;
+        case 4:
+            if (isdigit(c))
+            {
+                estado = 4;
+                digitos[tamD++] = c;
+                digitos[tamD] = '\0';
+            }
+            else if (c == '.')
+            {
+                estado = 7;
+                digitos[tamD++] = c;
+                digitos[tamD] = '\0';
+            }
+            else if (c == '_' || isalpha(c))
+            {
+                errorLex(contaLinha, c);
+            }
+            else
+            {
+                estado = 5;
+                ungetc(c, fd);
+
+                token.cat = CONST_INT;
+                token.valInt = atoi(digitos);
+
+                return token;
+            }
+            break;
+        case 7:
+            if (isdigit(c))
+            {
+                estado = 7;
+
+                digitos[tamD++] = c;
+                digitos[tamD] = '\0';
+            }
+            else
+            {
+                estado = 8;
+
+                ungetc(c, fd);
+
+                token.cat = CONST_FLOAT;
+                token.valFloat = atof(digitos);
+
+                return token;
+            }
+            break;
+        case 9:
+            if (c == '\'')
+            {
+                errorLex(contaLinha, c);
+            }
+            else if (c == '\\')
+            {
+                estado = 12;
+            }
+            else if (isprint(c))
+            {
+                estado = 10;
+                lexema[tamL++] = c;
+                lexema[tamL] = '\0';
+            }
+            else
+            {
+                errorLex(contaLinha, c);
+            }
+            break;
+        case 10:
+            if (c == '\'')
+            {
+                estado = 0;
+
+                token.cat = CONST_CHAR;
+
+                strcpy(token.lexema, lexema);
+
+                return token;
+            }
+            else
+            {
+                errorLex(contaLinha, c);
+            }
+            break;
+        case 12:
+            if (c == 'n')
+            {
+                estado = 10;
+                strcpy(lexema, "enter");
+            }
+            else if (c == '0')
+            {
+                estado = 10;
+
+                strcpy(lexema, "null");
+            }
+            else
+            {
+                errorLex(contaLinha, c);
+            }
+            break;
+        case 15:
+            if (c == '\"')
+            {
+                if (tamL == 0)
+                {
+                    errorLex(contaLinha, c);
+                }
+
+                estado = 0;
+
+                token.cat = LITERAL;
+                strcpy(token.lexema, lexema);
+
+                return token;
+            }
+            else if (isprint(c))
+            {
+                if (tamL < TAM_LEXEMA - 1)
+                {
+                    lexema[tamL++] = c;
+                    lexema[tamL] = '\0';
+                }
+                else
+                {
+                    errorLex(contaLinha, c);
+                }
+            }
+            else if (c == '\n')
+            {
+                errorLex(contaLinha, c);
+            }
+            break;
+        case 18:
+            if (c == '/')
+            {
+                estado = 19;
+
+                lexema[tamL++] = c;
+                lexema[tamL] = '\0';
+            }
+            else
+            {
+                estado = 38;
+                ungetc(c, fd);
+
+                token.cat = OP_ARIT;
+                token.codigo = DIVISAO;
+
+                return token;
+            }
+            break;
+        case 19:
+            if (c == '\n')
+            {
+                estado = 0; 
+            }
+            else
+            {
+                lexema[tamL++] = c;
+            }
+            break;
+        case 21:
+            if (c == '=')
+            {
+                estado = 22;
+
+                token.cat = OP_RELAC;
+                token.codigo = IGUALDADE;
+
+                return token;
+            }
+            else
+            {
+                estado = 23;
+
+                ungetc(c, fd);
+
+                token.cat = OP_ARIT;
+                token.codigo = ATRIBUICAO;
+
+                return token;
+            }
+            break;
+        case 24:
+            if (c == '=')
+            {
+                estado = 0;
+
+                token.codigo = DIFERENTE;
+
+                return token;
+            }
+            else
+            {
+                estado = 0;
+                ungetc(c, fd);
+
+                token.codigo = NOT_LOGIC;
+
+                return token;
+            }
+            break;
+        case 27:
+            if (c == '=')
+            {
+                estado = 28;
+
+                token.codigo = MENOR_IGUAL;
+
+                return token;
+            }
+            else
+            {
+                estado = 0;
+                ungetc(c, fd);
+
+                token.codigo = MENOR;
+
+                return token;
+            }
+            break;
+        case 30:
+            if (c == '=')
+            {
+                estado = 31;
+
+                token.codigo = MAIOR_IGUAL;
+
+                return token;
+            }
+            else
+            {
+                estado = 0;
+                ungetc(c, fd);
+
+                token.codigo = MAIOR;
+
+                return token;
+            }
+            break;
+        case 39:
+            if (c == '&')
+            {
+                estado = 40;
+
+                token.cat = OP_LOGIC;
+
+                token.codigo = AND_LOGIC;
+
+                return token;
+            }
+            else
+            {
+                estado = 41;
+
+                token.cat = SINAL;
+
+                ungetc(c, fd);
+
+                token.codigo = REFERENCIA;
+
+                return token;
+            }
+            break;
+        case 42:
+            if (c == '|')
+            {
+                estado = 43;
+
+                token.cat = OP_LOGIC;
+
+                token.codigo = OR_LOGIC;
+
+                return token;
+            }
+            else
+            {
+                errorLex(contaLinha, c);
+            }
+            break;
         }
     }
 }

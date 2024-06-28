@@ -58,6 +58,10 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "*.embeddedhtml": "html",
-    "funcaux.h": "c"
+    "funcaux.h": "c",
+    "tabs.h": "c",
+    "analex.h": "c",
+    "stdio.h": "c",
+    "stdlib.h": "c"
   }
 }

@@ -13,3 +13,6 @@ Para realizar a análise léxica da expressão presente no arquivo expression.tx
 ./DoBlock lexico<br>
 Para realizar a análise sintática, execute o comando:<br>
 ./DoBlock sintatico<br>
+
+gcc -o DoBlock DoBlock.c
+
