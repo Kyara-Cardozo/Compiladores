@@ -3,10 +3,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
-#include "src/analex/Analex.h"
-#include "src/analex/Analex.c"
-#include "src/anasynt/Anasynt.h"
-#include "src/anasynt/Anasynt.c"
+#include "src/Analisador Lexico/Analex.c"
+#include "src/Analisador Lexico/Analex.h"
+#include "src/Analisador Sintatico/Anasynt.h"
+#include "src/Analisador Sintatico/Anasynt.c"
 #include "src/Funcaux.h"
 #include "src/Funcaux.c"
 #include "src/tabelaId.h"

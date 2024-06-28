@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "compiler/src/Analisador Lexico/Analex.h"
+#include "../Analisador Lexico/Analex.h"
 
 
 
