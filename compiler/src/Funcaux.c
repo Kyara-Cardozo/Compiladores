@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "analex/Analex.h"
+#include "compiler/src/Analisador Lexico/Analex.h"
 #include "Funcaux.h"
 
 TOKEN t;

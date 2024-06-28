@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../analex/Analex.h"
+#include "../Analisador Lexico/Analex.h"
 #include "../Funcaux.h"
 #include "../tabelaId.h"
-#include "Anasynt.h"
+#include "../Analisador Sintatico/Anasynt.h"
 
 // Variáveis globais
 bool is_const; // Variável para indicar se uma declaração é de constante

@@ -3,7 +3,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "analex/Analex.h"
+#include "compiler/src/Analisador Lexico/Analex.h"
+
+
 
 #define ID_TAB_TAMANHO_MAXIMO 200
 
