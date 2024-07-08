@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "compiler/src/Analisador Lexico/Analex.c"
-#include "compiler/src/Funcao.c"
-#include "compiler/src/Analisador Sintatico/AnaSint.h"
-#include "compiler/src/Funcao.h"
+#include "compiler/Analex.c"
+#include "compiler/Funcao.c"
+#include "compiler/AnaSint.h"
+#include "compiler/Funcao.h"
 #include "compiler/Processandotokens.c"
 
 FILE *fd;

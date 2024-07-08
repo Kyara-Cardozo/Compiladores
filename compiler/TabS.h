@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "compiler/src/Analisador Lexico/Analex.h"
+#include "compiler/Analex.h"
 #include <stdbool.h>
 
 #define TAM_MAX_TAB 100

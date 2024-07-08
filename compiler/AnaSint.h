@@ -1,7 +1,7 @@
 #ifndef ANASINT_H
 #define ANASINT_H
 
-#include "compiler/src/Analisador Lexico/Analex.h"
+#include "compiler/Analex.h"
 #include <stdbool.h>
 #include <stdio.h>
 

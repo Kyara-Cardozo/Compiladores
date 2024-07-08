@@ -2,11 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "compiler/src/Analisador Lexico/Analex.c"
-#include "compiler/src/Analisador Lexico/Analex.h"
-#include "AnaSint.h"
-#include "compiler/src/TabS.h"
-#include "compiler/src/TabS.c"
+#include "compiler/Analex.c"
+#include "compiler/Analex.h"
+#include "compiler/AnaSint.h"
+#include "compiler/TabS.h"
+#include "compiler/TabS.c"
 
 TabIdef tab_idef;
 int escopoAtual = 0;

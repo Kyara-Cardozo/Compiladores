@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "compiler/src/Analisador Lexico/Analex.h"
-#include "compiler/src/Analisador Lexico/Analex.h"
+#include "compiler/Analex.h"
+#include "compiler/Analex.h"
 
 void processador_tokens(FILE *fd)
 {

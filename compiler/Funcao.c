@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "compiler/src/Funcao.h"
+#include "Funcao.h"
 
 // Função para reportar um erro sintático
 void errorSint(int contaLinha, char caracter[]) {

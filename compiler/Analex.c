@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "Analex.h"
-#include "compiler/src/Funcao.h"
+#include "compiler/Funcao.h"
 
 // Define os tamanhos máximos para os lexemas, literais e números
 #define TAM_LEXEMA 50
