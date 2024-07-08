@@ -15,17 +15,17 @@ char TABS[200] = "";
 
 void Analisador_lexico(FILE *fd)
 {
-    printf("\n[========== INICIO - Analise lexica ==========]\n");
+    printf("\n[.......... INICIO - Analise lexica ..........]\n");
     processador_tokens(fd);
-    printf("\n[========== FIM - Analise lexica ==========]\n");
+    printf("\n[..........FIM - Analise lexica ..........]\n");
 }
 
 void Analisador_sintatico()
 {
     // Iniciar_tabela();
-    printf("\n[========== INICIO - Analise sintatica ==========]\n");
+    printf("\n[.......... INICIO - Analise sintatica ..........]\n");
     prog();
-    printf("\n[========== FIM - Analise sintatica ==========]\n");
+    printf("\n[.......... FIM - Analise sintatica ..........]\n");
 }
 
 int main()

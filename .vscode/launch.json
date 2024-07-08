@@ -6,8 +6,8 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/kyaracardozo/Compiladores/compiler/src/Analisador Lexico",
-      "program": "/Users/kyaracardozo/Compiladores/compiler/src/Analisador Lexico/build/Debug/outDebug"
+      "cwd": "/Users/kyaracardozo/Compiladores/compiler/src/Analisador Sintatico",
+      "program": "/Users/kyaracardozo/Compiladores/compiler/src/Analisador Sintatico/build/Debug/outDebug"
     }
   ]
 }

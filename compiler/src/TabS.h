@@ -26,7 +26,7 @@ typedef struct
     TabSimb tabela_simb[TAM_MAX_TAB];
 } TabIdef;
 
-extern TabIdef tabela_idef;
+extern TabIdef tab_idef;
 extern TOKEN tk;
 extern int escopoAtual;
 

@@ -5,7 +5,7 @@ enum MOVIM
 {
     AVANCA,
     MANTEM,
-    RETROCEDE
+    VOLTA
 };
 
 

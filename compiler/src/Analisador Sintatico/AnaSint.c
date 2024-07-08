@@ -8,7 +8,7 @@
 #include "compiler/src/TabS.h"
 #include "compiler/src/TabS.c"
 
-TabIdef tabela_idef;
+TabIdef tab_idef;
 int escopoAtual = 0;
 void consome(int esperado) {
     if ((unsigned int)tk.cat == (unsigned int)esperado || (unsigned int)tk.codigo == (unsigned int)esperado) {

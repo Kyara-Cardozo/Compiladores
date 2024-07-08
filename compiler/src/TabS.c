@@ -5,7 +5,7 @@
 
 // Função para inicializar a tabela de símbolos
 void Iniciar_tabela() {
-    tabela_idef.tamTab = 0; // Define o tamanho da tabela como 0, indicando que está vazia
+    tab_idef.tamTab = 0; // Define o tamanho da tabela como 0, indicando que está vazia
 }
 
 // Função para imprimir a tabela de símbolos
@@ -18,15 +18,15 @@ void Imprimir_tabela() {
     printf(".....................................................................................\n");
 
     // Percorre a tabela e imprime cada símbolo
-    for (int i = 0; i < tabela_idef.tamTab; i++) {
+    for (int i = 0; i < tab_idef.tamTab; i++) {
         printf("| %-6d | %-10s | %-10d | %-6d | %-10s | %-6d | %-8d |\n",
                i,
-               tabela_idef.tabela_simb[i].lexema,
-               tabela_idef.tabela_simb[i].tipo,
-               tabela_idef.tabela_simb[i].escopo,
-               tabela_idef.tabela_simb[i].categoria,
-               tabela_idef.tabela_simb[i].zombie,
-               tabela_idef.tabela_simb[i].endereco);
+               tab_idef.tabela_simb[i].lexema,
+               tab_idef.tabela_simb[i].tipo,
+               tab_idef.tabela_simb[i].escopo,
+               tab_idef.tabela_simb[i].categoria,
+               tab_idef.tabela_simb[i].zombie,
+               tab_idef.tabela_simb[i].endereco);
     }
     printf(".....................................................................................\n");
 }
@@ -34,8 +34,8 @@ void Imprimir_tabela() {
 // Função para buscar um lexema na tabela de símbolos
 int Buscar_tabela(const char lexema[]) {
     // Percorre a tabela para encontrar o lexema
-    for (int i = 0; i < tabela_idef.tamTab; i++) {
-        if (strcmp(tabela_idef.tabela_simb[i].lexema, lexema) == 0) {
+    for (int i = 0; i < tab_idef.tamTab; i++) {
+        if (strcmp(tab_idef.tabela_simb[i].lexema, lexema) == 0) {
             return i;  // Retorna o índice se encontrar o lexema
         }
     }
@@ -45,8 +45,8 @@ int Buscar_tabela(const char lexema[]) {
 // Função para buscar um lexema em um escopo específico
 int Buscar_escopo(char lexema[], int escopo) {
     // Percorre a tabela para encontrar o lexema e o escopo
-    for (int i = 0; i < tabela_idef.tamTab; i++) {
-        if (strcmp(tabela_idef.tabela_simb[i].lexema, lexema) == 0 && tabela_idef.tabela_simb[i].escopo == escopo) {
+    for (int i = 0; i < tab_idef.tamTab; i++) {
+        if (strcmp(tab_idef.tabela_simb[i].lexema, lexema) == 0 && tab_idef.tabela_simb[i].escopo == escopo) {
             return i; // Retorna o índice se encontrar o lexema no escopo específico
         }
     }
@@ -56,7 +56,7 @@ int Buscar_escopo(char lexema[], int escopo) {
 // Função para inserir um novo símbolo na tabela de símbolos
 int Insercao_tabela(char lexema[], int escopo, int tipo, char categoria[], bool zombie) {
     // Verifica se a tabela está cheia
-    if (tabela_idef.tamTab >= TAM_MAX_TAB) {
+    if (tab_idef.tamTab >= TAM_MAX_TAB) {
         printf("[ERRO] Opa, a tabela de símbolos está cheia.\n");
         return -1;
     }
@@ -77,18 +77,18 @@ int Insercao_tabela(char lexema[], int escopo, int tipo, char categoria[], bool 
     strncpy(novoSimbolo.categoria, categoria, TAM_CATEGORIA - 1);
     novoSimbolo.categoria[TAM_CATEGORIA - 1] = '\0'; // Assegura que a string esteja terminada em null
     novoSimbolo.zombie = zombie;
-    novoSimbolo.endereco = tabela_idef.tamTab;
+    novoSimbolo.endereco = tab_idef.tamTab;
 
     // Adiciona o novo símbolo à tabela
-    tabela_idef.tabela_simb[tabela_idef.tamTab++] = novoSimbolo;
+    tab_idef.tabela_simb[tab_idef.tamTab++] = novoSimbolo;
     return 0;
 }
 
 // Função para remover o último símbolo inserido na tabela de símbolos
 int Remover_ultimo() {
     // Verifica se há símbolos na tabela
-    if (tabela_idef.tamTab > 0) {
-        tabela_idef.tamTab--; // Decrementa o tamanho da tabela, efetivamente removendo o último símbolo
+    if (tab_idef.tamTab > 0) {
+        tab_idef.tamTab--; // Decrementa o tamanho da tabela, efetivamente removendo o último símbolo
         return 0;
     } else {
         printf("[ERRO] Opa, a tabela de símbolos está vazia.\n");
