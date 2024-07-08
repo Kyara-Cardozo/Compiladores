@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "AnaLex.h"
+#include "Analex.h"
 #include "compiler/src/Funcao.h"
 
 // Define os tamanhos máximos para os lexemas, literais e números
@@ -18,7 +18,7 @@ int lti = 0; // Índice da tabela de literais
 int contaLinha = 1; // Contador de linhas
 
 // Função de análise léxica
-TOKEN AnaLex(FILE *fd)
+TOKEN Analex(FILE *fd)
 {
     int estado = 0; // Estado inicial do autômato
     int tamL = 0; // Tamanho do lexema

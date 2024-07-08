@@ -1,4 +1,4 @@
-#define ANASINT_H
+#ifndef ANASINT_H
 #define ANASINT_H
 
 #include "compiler/src/Analisador Lexico/Analex.h"

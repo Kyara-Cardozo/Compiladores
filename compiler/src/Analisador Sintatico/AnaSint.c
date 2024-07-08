@@ -12,7 +12,7 @@ TabIdef tab_idef;
 int escopoAtual = 0;
 void consome(int esperado) {
     if ((unsigned int)tk.cat == (unsigned int)esperado || (unsigned int)tk.codigo == (unsigned int)esperado) {
-        tk = AnaLex(fd);
+        tk = Analex(fd);
     } else {
         char errMsg[100];
         sprintf(errMsg, "Token inesperado. Esperado: %d, Encontrado: %d", esperado, tk.codigo);
@@ -22,7 +22,7 @@ void consome(int esperado) {
 
 void prog() {
     Iniciar_tabela();
-    tk = AnaLex(fd);
+    tk = Analex(fd);
 
     while (tk.cat == PAL_RESERV && (tk.codigo == CONST || tk.codigo == INT || tk.codigo == CHAR || tk.codigo == REAL || tk.codigo == BOOL)) {
         decl_list_var();

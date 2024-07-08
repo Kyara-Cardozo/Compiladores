@@ -7,7 +7,7 @@ void processador_tokens(FILE *fd)
     TOKEN tk;
     while (1)
     {
-        tk = AnaLex(fd);
+        tk = Analex(fd);
 
         switch (tk.cat)
         {

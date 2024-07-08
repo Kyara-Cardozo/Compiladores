@@ -60,8 +60,9 @@
     "*.embeddedhtml": "html",
     "funcaux.h": "c",
     "tabs.h": "c",
-    "analex.h": "c",
+    "Analex.h": "c",
     "stdio.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "ctype.h": "c"
   }
 }

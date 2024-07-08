@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 // Protege a inclusão múltipla do cabeçalho
-#ifndef ANALEX_H
-#define ANALEX_H
+#ifndef Analex_H
+#define Analex_H
 
 // Define o tamanho máximo do lexema
 #define TAM_MAX_LEXEMA 31
@@ -120,6 +120,6 @@ extern TOKEN tk;
 extern FILE *fd;
 
 // Declaração da função de análise léxica
-TOKEN AnaLex(FILE *);
+TOKEN Analex(FILE *);
 
 #endif
