@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "compiler/Analex.c"
-#include "compiler/Funcao.c"
-#include "compiler/AnaSint.h"
-#include "compiler/Funcao.h"
-#include "compiler/Processandotokens.c"
+#include "Analex.c"
+#include "Funcao.c"
+#include "AnaSint.h"
+#include "Funcao.h"
+#include "Processandotokens.c"
 
 FILE *fd;
 TOKEN tk;
@@ -24,7 +24,7 @@ void Analisador_sintatico()
 {
     // Iniciar_tabela();
     printf("\n[.......... INICIO - Analise sintatica ..........]\n");
-    prog();
+    program();
     printf("\n[.......... FIM - Analise sintatica ..........]\n");
 }
 

@@ -1,7 +1,7 @@
 #ifndef ANASINT_H
 #define ANASINT_H
 
-#include "compiler/Analex.h"
+#include "Analex.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -15,7 +15,7 @@ extern bool mostraArvore;
 extern char TABS[200];
 
 // Funções do analisador sintático
-void prog();            // prog ::= {decl_list_var} {decl_block_prot} block_main {block_def}
+void program();            // prog ::= {decl_list_var} {decl_block_prot} block_main {block_def}
 void decl_list_var();   // decl_list_var ::= [const] tipo decl_var { , decl_var}
 void decl_block_prot(); // decl_block_prot ::= block id [with [&] tipo { [ ] } { , [&] tipo { [ ] } }]
 void block_main();      // block_main ::= block main {decl_list_var} { cmd } endblock

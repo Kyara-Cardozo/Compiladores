@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "compiler/Analex.h"
-#include "compiler/Analex.h"
+#include "Analex.h"
+#include "Analex.h"
 
 void processador_tokens(FILE *fd)
 {

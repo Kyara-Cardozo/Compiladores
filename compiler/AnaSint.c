@@ -2,11 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "compiler/Analex.c"
-#include "compiler/Analex.h"
-#include "compiler/AnaSint.h"
-#include "compiler/TabS.h"
-#include "compiler/TabS.c"
+#include "Analex.c"
+#include "Analex.h"
+#include "AnaSint.h"
+#include "TabS.h"
+#include "TabS.c"
 
 TabIdef tab_idef;
 int escopoAtual = 0;
@@ -20,7 +20,7 @@ void consome(int esperado) {
     }
 }
 
-void prog() {
+void program() {
     Iniciar_tabela();
     tk = Analex(fd);
 
