@@ -2,30 +2,31 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "Analex.c"
-#include "Funcao.c"
+//#include "Analex.c"
+//#include "Funcao.c"
 #include "AnaSint.h"
 #include "Funcao.h"
-#include "Processandotokens.c"
+//#include "Processandotokens.c"
+#include "Processandotokens.h"
 
-FILE *fd;
+FILE *fd; 
 TOKEN tk;
 
-char TABS[200] = "";
+char Tabulacao[200] = "";
 
 void Analisador_lexico(FILE *fd)
 {
-    printf("\n[.......... INICIO - Analise lexica ..........]\n");
+    printf("\n[.......... Inicio da Analise Lexica ..........]\n");
     processador_tokens(fd);
-    printf("\n[..........FIM - Analise lexica ..........]\n");
+    printf("\n[..........Fim da Analise Lexica ..........]\n");
 }
 
 void Analisador_sintatico()
 {
     // Iniciar_tabela();
-    printf("\n[.......... INICIO - Analise sintatica ..........]\n");
+    printf("\n[.......... Inicio da Analise Lexica ..........]\n");
     program();
-    printf("\n[.......... FIM - Analise sintatica ..........]\n");
+    printf("\n[.......... Fim da Analise Lexica ..........]\n");
 }
 
 int main()

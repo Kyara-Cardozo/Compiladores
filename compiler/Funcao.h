@@ -8,12 +8,11 @@ enum MOVIM
     VOLTA
 };
 
+extern char Tabulacao[200];
 
-extern char TABS[200];
-
-void errorLex(int contaLinha, char caracter);
-void errorSint(int contaLinha, char caracter[]);
-void PrintNodo(char info[], int movim);
-void PrintNodoInt(int val, int movim);
+void errorLex(int contaLinha, char caracter); 
+void errorSint(int contaLinha, char caracter[]); 
+void PrintNodo(char info[], int movim);  
+void PrintNodoInt(int val, int movim);  
 
 #endif

@@ -24,22 +24,22 @@ void errorLex(int contaLinha, char caracter) {
 }
 
 // Variável global para armazenar a indentação atual
-char TABS[256] = "";
+//char Tabulacao[200] = "";
 
 // Função para imprimir informações de um nodo
 void PrintNodo(char info[], int movim) {
     // Se o movimento for AVANCA, imprime a informação e adiciona uma tabulação
     if (movim == AVANCA) {
-        printf("%s%s\n", TABS, info);
-        strcat(TABS, "\t");
+        printf("%s%s\n", Tabulacao, info);
+        strcat(Tabulacao, "\t");
     }
     // Se o movimento for MANTEM, apenas imprime a informação com a tabulação atual
     else if (movim == MANTEM) {
-        printf("%s%s\n", TABS, info);
+        printf("%s%s\n", Tabulacao, info);
     }
     // Se o movimento for VOLTA, remove uma tabulação
     else if (movim == VOLTA) {
-        TABS[strlen(TABS) - 1] = '\0';
+        Tabulacao[strlen(Tabulacao) - 1] = '\0';
     }
 }
 
@@ -47,15 +47,15 @@ void PrintNodo(char info[], int movim) {
 void PrintNodoInt(int val, int movim) {
     // Se o movimento for AVANCA, imprime o valor e adiciona uma tabulação
     if (movim == AVANCA) {
-        printf("%s%d\n", TABS, val);
-        strcat(TABS, "\t");
+        printf("%s%d\n", Tabulacao, val);
+        strcat(Tabulacao, "\t");
     }
     // Se o movimento for MANTEM, apenas imprime o valor com a tabulação atual
     else if (movim == MANTEM) {
-        printf("%s%d\n", TABS, val);
+        printf("%s%d\n", Tabulacao, val);
     }
     // Se o movimento for VOLTA, remove uma tabulação
     else if (movim == VOLTA) {
-        TABS[strlen(TABS) - 1] = '\0';
+        Tabulacao[strlen(Tabulacao) - 1] = '\0';
     }
 }

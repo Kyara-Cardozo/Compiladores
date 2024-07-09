@@ -12,7 +12,7 @@ extern int contaLinha;
 extern int escopoAtual;
 
 extern bool mostraArvore;
-extern char TABS[200];
+extern char Tabulacao[200];
 
 // Funções do analisador sintático
 void program();            // prog ::= {decl_list_var} {decl_block_prot} block_main {block_def}

@@ -6,7 +6,7 @@
 
 // Define o tamanho máximo do lexema
 #define TAM_MAX_LEXEMA 31
-
+FILE *fd;
 // Define os diferentes tipos de categorias de tokens
 enum TOKEN_CAT
 {
@@ -118,7 +118,7 @@ typedef struct
 // Declaração de variáveis externas
 extern TOKEN tk;
 extern FILE *fd;
-
+extern char Tabulacao[200];
 // Declaração da função de análise léxica
 TOKEN Analex(FILE *);
 

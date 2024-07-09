@@ -2,11 +2,12 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "Analex.c"
+//#include "Analex.c"
 #include "Analex.h"
 #include "AnaSint.h"
 #include "TabS.h"
-#include "TabS.c"
+#include "Funcao.h"
+//#include "TabS.c"
 
 TabIdef tab_idef;
 int escopoAtual = 0;
