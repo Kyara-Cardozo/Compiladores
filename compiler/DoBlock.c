@@ -4,10 +4,12 @@
 #include <string.h>
 //#include "Analex.c"
 //#include "Funcao.c"
+#include "Analex.h"
 #include "AnaSint.h"
 #include "Funcao.h"
 //#include "Processandotokens.c"
 #include "Processandotokens.h"
+#include "TabS.h"
 
 FILE *fd; 
 TOKEN tk;
@@ -23,10 +25,11 @@ void Analisador_lexico(FILE *fd)
 
 void Analisador_sintatico()
 {
-    // Iniciar_tabela();
+    Iniciar_tabela();
     printf("\n[.......... Inicio da Analise Lexica ..........]\n");
     program();
     printf("\n[.......... Fim da Analise Lexica ..........]\n");
+   
 }
 
 int main()
@@ -40,7 +43,7 @@ int main()
         return 1;
     }
 
-    // Analisador_lexico(fd);
+    Analisador_lexico(fd);
     Analisador_sintatico();
 
     fclose(fd);
